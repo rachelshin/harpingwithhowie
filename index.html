@@ -202,23 +202,26 @@ html.touch .menu-btn { display: grid; }
   padding-bottom: clamp(48px, 7vw, 70px);
   text-align: center;
 }
-.hero h1 {
-  font: 400 clamp(38px, 9vw, 64px)/1.05 var(--headline);
-  color: var(--fill);
-  -webkit-text-stroke: 3px var(--ink);
-  paint-order: stroke fill;
-  text-wrap: balance;
-}
 /* The cover shrinks to fit the screen's height so the Play button stays above the fold.
-   384px is everything else above Play's bottom edge (header, headline, gaps,
-   "for grown-ups", Play). 476/528 turns the leftover height into a width.
-   Phones use a smaller number below, since they hide the headline. */
+   250px is everything else above Play's bottom edge on desktop (header, top padding, gap,
+   Play); phones use 204px since their header and padding are smaller. 476/528 turns the
+   leftover height into a width. */
 .cover {
-  width: min(476px, 100%, max(220px, calc((100vh - 384px) * 476 / 528)));
-  width: min(476px, 100%, max(220px, calc((100svh - 384px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100vh - 250px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100svh - 250px) * 476 / 528)));
   aspect-ratio: 476 / 528;
   overflow: hidden;
   border: 2px solid var(--ink);
+}
+html.touch .cover {
+  width: min(476px, 100%, max(220px, calc((100vh - 204px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100svh - 204px) * 476 / 528)));
+}
+@media (max-width: 719.98px) {
+  .cover {
+    width: min(476px, 100%, max(220px, calc((100vh - 204px) * 476 / 528)));
+    width: min(476px, 100%, max(220px, calc((100svh - 204px) * 476 / 528)));
+  }
 }
 .cover img {
   width: 100%;
@@ -226,41 +229,7 @@ html.touch .menu-btn { display: grid; }
   object-fit: cover;
   object-position: 20% 50%;
 }
-.write-on {
-  display: inline-block;
-  padding: 0 6px;
-  font: 400 clamp(44px, 12vw, 60px)/1.1 var(--hand);
-  animation: write 1.8s cubic-bezier(.45, .05, .55, .95) 2.5s both;
-}
-/* Phones: drop the headline and "for grown-ups" so the hero is just cover, Play and
-   description. The headline stays readable to screen readers (it's the page's h1). The cover
-   gets the freed-up room: 204px is header + top padding + gap + Play on a phone. */
-html.touch .write-on { display: none; }
-html.touch .hero h1 {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip: rect(0 0 0 0); white-space: nowrap;
-}
-html.touch .cover {
-  width: min(476px, 100%, max(220px, calc((100vh - 204px) * 476 / 528)));
-  width: min(476px, 100%, max(220px, calc((100svh - 204px) * 476 / 528)));
-}
-@media (max-width: 719.98px) {
-  .write-on { display: none; }
-  .hero h1 {
-    position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap;
-  }
-  .cover {
-    width: min(476px, 100%, max(220px, calc((100vh - 204px) * 476 / 528)));
-    width: min(476px, 100%, max(220px, calc((100svh - 204px) * 476 / 528)));
-  }
-}
-@keyframes write {
-  from { clip-path: inset(-20% 100% -20% 0); }
-  to { clip-path: inset(-20% 0 -20% 0); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .write-on { animation: none; }
   html { scroll-behavior: auto; }
 }
 .hero-desc { max-width: 600px; text-wrap: balance; }
@@ -604,11 +573,10 @@ input, textarea, select { outline: none; box-shadow: none; }
 <main>
   <section id="top" class="hero">
     <div class="container hero-col">
-      <h1>An After&#8209;School Special</h1>
+      <h1 class="sr-only">Harping with Howie: An After&#8209;School Special</h1>
       <div class="cover">
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
-      <span class="write-on">for grown&#8209;ups</span>
       <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span id="play-label">Play</span></button>
       <p class="body-text hero-desc">A podcast about the peer support specialists of <span class="nowrap">New York City.</span></p>
     </div>
