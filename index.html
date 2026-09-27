@@ -298,6 +298,24 @@ html.touch .cover {
 .about { background: var(--cream); }
 .about .headline { color: var(--sky); }
 .about-copy { display: flex; flex-direction: column; gap: 22px; }
+/* "Peer Support" in the About text: a button that reads like underlined text and opens a box. */
+.term-btn {
+  appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+.term-btn:hover { text-decoration-thickness: 3px; }
+.peer-title { padding-right: 56px; } /* clears the close button */
 
 /* ---------- Hosts ---------- */
 .hosts { background: var(--sky); }
@@ -601,12 +619,11 @@ input, textarea, select { outline: none; box-shadow: none; }
     <div class="container two-col">
       <div class="title-stack">
         <span class="eyebrow">about the show</span>
-        <h2 class="headline">What is peer support?</h2>
+        <h2 class="headline">Real stories, told by peers</h2>
       </div>
       <div class="body-text about-copy">
-        <p>One of the best&#8209;kept secrets in mental healthcare.</p>
-        <p>It's help from someone who's been there. Peer specialists use their own lived experience of mental health challenges and recovery to walk alongside the people they support. Not above them. Next to them.</p>
-        <p>On Harping with Howie, participants in the award&#8209;winning Howie the Harp Peer Support Specialist Training program share their experience, strength and hope: what worked, what didn't, and what they learned along the way.</p>
+        <p>An after&#8209;school special for adults. Participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn" id="peer-open">Peer Support</button> Specialist Training program in New York City share their experience, strength, and hope. What worked, what didn't, and what they learned along the way.</p>
+        <p>Hosts and program participants Anna Butler, John F. O'Donnell, and Ben Roberts bring wisdom and levity to the things that couldn't break us.</p>
       </div>
     </div>
   </section>
@@ -675,6 +692,17 @@ input, textarea, select { outline: none; box-shadow: none; }
       <span class="modal-name" id="modal-name"></span>
       <span class="modal-role">Host and participant, Howie the Harp Peer Support Specialist Training</span>
       <p class="body-text" id="modal-bio"></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="peer-modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="peer-title">
+    <button type="button" class="modal-close" aria-label="Close">&times;</button>
+    <div class="modal-body">
+      <h2 class="modal-name peer-title" id="peer-title">What is peer support?</h2>
+      <p class="body-text">One of the best&#8209;kept secrets in mental healthcare. It's when people with lived experience in mental health support other people who are struggling or in crisis.</p>
+      <p class="body-text">Studies show that peer support is as effective as, and in some cases more effective than, traditional mental health treatments.</p>
     </div>
   </div>
 </div>
@@ -828,6 +856,11 @@ input, textarea, select { outline: none; box-shadow: none; }
     document.getElementById('modal-bio').textContent = host.bio;
     showModal(hostOverlay, cards[i]);
   }
+
+  // ---------- "What is peer support?" pop-up ----------
+  var peerOverlay = document.getElementById('peer-modal');
+  var peerOpen = document.getElementById('peer-open');
+  peerOpen.addEventListener('click', function () { showModal(peerOverlay, peerOpen); });
 
   // ---------- Contact pop-up (Netlify Forms) ----------
   var contactOverlay = document.getElementById('contact-modal');
