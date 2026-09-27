@@ -419,19 +419,65 @@ html.touch .write-on { animation-delay: 1.2s; }
 }
 .btn-touch:hover { background: var(--ink); color: var(--yellow); }
 
-/* Email button: the address and "Copied" sit in the same grid cell, so the button
-   keeps its size when the label swaps. */
-.btn-email {
-  appearance: none;
-  margin: 0;
-  cursor: pointer;
-  display: inline-grid;
-  line-height: 1.25;
+button.pill { appearance: none; margin: 0; cursor: pointer; }
+
+/* ---------- Contact pop-up, styled as a little email compose window ---------- */
+.compose { --compose-pad: clamp(20px, 5vw, 32px); }
+.compose-bar {
+  min-height: 76px; /* 48px close button + 14px above and below */
+  display: flex;
+  align-items: center;
+  padding: 0 76px 0 var(--compose-pad);
+  background: var(--ink);
+  color: var(--cream);
+  font: 400 21px/1.2 var(--serif);
+  letter-spacing: .045em;
 }
-.btn-email > span { grid-area: 1 / 1; }
-.btn-email .copied { visibility: hidden; align-self: center; }
-.btn-email.is-copied .email-text { visibility: hidden; }
-.btn-email.is-copied .copied { visibility: visible; }
+.compose .modal-close { background: var(--cream); color: var(--ink); }
+.compose-form[hidden] { display: none; }
+.compose-row {
+  display: grid;
+  grid-template-columns: 5.8em minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px var(--compose-pad);
+  border-bottom: 2px solid var(--ink);
+  font: 400 20px/1.4 var(--serif);
+  letter-spacing: .03em;
+}
+.compose-row:focus-within { background: var(--fill); }
+.compose-row.is-body { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.compose-label { white-space: nowrap; }
+.compose-to { user-select: all; -webkit-user-select: all; }
+.compose-row input, .compose-row textarea {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: inherit;
+}
+.compose-row textarea { min-height: 180px; resize: vertical; }
+input, textarea, select { outline: none; box-shadow: none; }
+.compose-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 20px;
+  padding: 20px var(--compose-pad) 24px;
+}
+.contact-send {
+  min-width: min(100%, 220px);
+  color: var(--cream);
+}
+.contact-send:disabled { cursor: default; background: var(--ink-hover); }
+.form-error { font: 400 20px/1.45 var(--serif); letter-spacing: .045em; }
+.compose-thanks { padding: var(--compose-pad); }
 .sr-only {
   position: absolute;
   width: 1px;
@@ -557,11 +603,7 @@ html.touch .write-on { animation-delay: 1.2s; }
         <p>Harping with Howie is made by people training to become peer specialists, for anyone who's wondered whether things can get better. Your support pays for recording, editing and getting these stories to the people who need them.</p>
         <div class="support-buttons">
           <a class="pill btn-funder" href="#">Become a funder</a>
-          <button type="button" class="pill btn-touch btn-email" id="email-btn" data-user="harpingwithhowie" data-domain="gmail.com" aria-label="Copy email address">
-            <span class="email-text"></span>
-            <span class="copied" aria-hidden="true">Copied</span>
-          </button>
-          <span class="sr-only" id="email-status" role="status"></span>
+          <button type="button" class="pill btn-touch" id="contact-open">Get in touch</button>
         </div>
       </div>
     </div>
@@ -606,6 +648,39 @@ html.touch .write-on { animation-delay: 1.2s; }
       <span class="modal-role">Host and participant, Howie the Harp Peer Support Specialist Training</span>
       <p class="body-text" id="modal-bio"></p>
     </div>
+  </div>
+</div>
+
+<!-- Netlify Forms: Netlify spots data-netlify="true" at deploy time and collects submissions. -->
+<div class="modal-overlay" id="contact-modal" hidden>
+  <div class="modal compose" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+    <div class="compose-bar" id="contact-title">New Message</div>
+    <button type="button" class="modal-close" aria-label="Close">&times;</button>
+    <form class="compose-form" id="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact">
+      <div class="sr-only" aria-hidden="true"><input name="bot-field" tabindex="-1" autocomplete="off"></div>
+      <div class="compose-row">
+        <span class="compose-label">To:</span>
+        <span class="compose-to" id="contact-to" data-user="harpingwithhowie" data-domain="gmail.com"></span>
+      </div>
+      <label class="compose-row">
+        <span class="compose-label">From:</span>
+        <input type="text" name="name" autocomplete="name" required>
+      </label>
+      <label class="compose-row">
+        <span class="compose-label">Reply to:</span>
+        <input type="email" name="email" autocomplete="email" required>
+      </label>
+      <label class="compose-row is-body">
+        <span class="compose-label">Message:</span>
+        <textarea name="message" rows="6" required></textarea>
+      </label>
+      <div class="compose-foot">
+        <button type="submit" class="pill contact-send">Send</button>
+        <p class="form-error" id="contact-error" role="alert" hidden>That didn't send. Please try again in a minute.</p>
+      </div>
+    </form>
+    <p class="body-text compose-thanks" id="contact-thanks" role="status" hidden>Sent! Thanks for writing. We'll get back to you soon.</p>
   </div>
 </div>
 
@@ -654,49 +729,52 @@ html.touch .write-on { animation-delay: 1.2s; }
     return btn;
   });
 
-  // ---------- Modal ----------
-  var overlay = document.getElementById('host-modal');
-  var dialog = overlay.querySelector('.modal');
-  var closeBtn = overlay.querySelector('.modal-close');
-  var openIndex = null;
+  // ---------- Pop-ups (shared by the host and contact pop-ups) ----------
+  var activeOverlay = null;
+  var returnFocusTo = null;
 
-  function openHost(i) {
-    var host = hosts[i];
-    openIndex = i;
-    fillPortrait(document.getElementById('modal-portrait'), host);
-    document.getElementById('modal-name').textContent = host.name;
-    document.getElementById('modal-bio').textContent = host.bio;
+  function showModal(overlay, from) {
+    activeOverlay = overlay;
+    returnFocusTo = from;
     overlay.hidden = false;
-    dialog.scrollTop = 0;
+    overlay.querySelector('.modal').scrollTop = 0;
     document.documentElement.classList.add('modal-open');
     document.body.classList.add('modal-open');
-    closeBtn.focus();
+    overlay.querySelector('.modal-close').focus();
   }
 
-  function closeHost() {
-    if (openIndex === null) return;
-    var card = cards[openIndex];
-    openIndex = null;
+  function hideModal() {
+    if (!activeOverlay) return;
+    var overlay = activeOverlay;
+    activeOverlay = null;
     overlay.hidden = true;
     document.documentElement.classList.remove('modal-open');
     document.body.classList.remove('modal-open');
-    card.focus();
+    if (overlay === contactOverlay) resetContactForm();
+    if (returnFocusTo) returnFocusTo.focus();
   }
 
-  closeBtn.addEventListener('click', closeHost);
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) closeHost();
+  Array.prototype.forEach.call(document.querySelectorAll('.modal-overlay'), function (overlay) {
+    overlay.querySelector('.modal-close').addEventListener('click', hideModal);
+    // Clicks on the dark backdrop close it; clicks inside the panel don't.
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) hideModal();
+    });
   });
 
   document.addEventListener('keydown', function (e) {
-    if (openIndex === null) return;
+    if (!activeOverlay) return;
     if (e.key === 'Escape') {
       e.preventDefault();
-      closeHost();
+      hideModal();
       return;
     }
     if (e.key === 'Tab') {
-      var focusable = dialog.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+      var dialog = activeOverlay.querySelector('.modal');
+      var focusable = Array.prototype.filter.call(
+        dialog.querySelectorAll('a[href], button:not([disabled]), input:not([type="hidden"]):not([tabindex="-1"]), textarea, [tabindex]:not([tabindex="-1"])'),
+        function (el) { return el.offsetParent !== null; }
+      );
       var first = focusable[0];
       var last = focusable[focusable.length - 1];
       if (!dialog.contains(document.activeElement)) {
@@ -712,47 +790,64 @@ html.touch .write-on { animation-delay: 1.2s; }
     }
   });
 
-  // ---------- Email button ----------
-  // The address is put together here, not written in the HTML, so spam bots scraping
-  // the page source don't find it. Tapping copies it; nothing opens a mail app.
-  var emailBtn = document.getElementById('email-btn');
-  var emailStatus = document.getElementById('email-status');
-  var email = emailBtn.dataset.user + '@' + emailBtn.dataset.domain;
-  var emailText = emailBtn.querySelector('.email-text');
-  emailText.appendChild(document.createTextNode(emailBtn.dataset.user));
-  emailText.appendChild(document.createElement('wbr')); // lets it break before the @ on narrow screens
-  emailText.appendChild(document.createTextNode('@' + emailBtn.dataset.domain));
-  emailBtn.setAttribute('aria-label', 'Copy email address, ' + email);
-  var copiedTimer = null;
+  // ---------- Host pop-up ----------
+  var hostOverlay = document.getElementById('host-modal');
 
-  function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) {
-      return navigator.clipboard.writeText(text);
-    }
-    return new Promise(function (resolve, reject) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      ok ? resolve() : reject();
-    });
+  function openHost(i) {
+    var host = hosts[i];
+    fillPortrait(document.getElementById('modal-portrait'), host);
+    document.getElementById('modal-name').textContent = host.name;
+    document.getElementById('modal-bio').textContent = host.bio;
+    showModal(hostOverlay, cards[i]);
   }
 
-  emailBtn.addEventListener('click', function () {
-    copyText(email).then(function () {
-      emailBtn.classList.add('is-copied');
-      emailStatus.textContent = 'Email address copied';
-      clearTimeout(copiedTimer);
-      copiedTimer = setTimeout(function () {
-        emailBtn.classList.remove('is-copied');
-        emailStatus.textContent = '';
-      }, 2000);
-    }).catch(function () {});
+  // ---------- Contact pop-up (Netlify Forms) ----------
+  var contactOverlay = document.getElementById('contact-modal');
+  var contactOpen = document.getElementById('contact-open');
+  var contactForm = document.getElementById('contact-form');
+  var contactSend = contactForm.querySelector('.contact-send');
+  var contactError = document.getElementById('contact-error');
+  var contactThanks = document.getElementById('contact-thanks');
+
+  // The "To" address is put together here, not written in the HTML, so spam bots
+  // scraping the page source don't find it. <wbr> lets it break before the @ when narrow.
+  var contactTo = document.getElementById('contact-to');
+  contactTo.appendChild(document.createTextNode(contactTo.dataset.user));
+  contactTo.appendChild(document.createElement('wbr'));
+  contactTo.appendChild(document.createTextNode('@' + contactTo.dataset.domain));
+
+  function resetContactForm() {
+    // After a successful send, the next open starts with a fresh form.
+    if (!contactThanks.hidden) {
+      contactForm.reset();
+      contactForm.hidden = false;
+      contactThanks.hidden = true;
+    }
+    contactError.hidden = true;
+  }
+
+  contactOpen.addEventListener('click', function () { showModal(contactOverlay, contactOpen); });
+
+  contactForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    contactError.hidden = true;
+    contactSend.disabled = true;
+    contactSend.textContent = 'Sending';
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(contactForm)).toString()
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.status);
+        contactForm.hidden = true;
+        contactThanks.hidden = false;
+      })
+      .catch(function () { contactError.hidden = false; })
+      .then(function () {
+        contactSend.disabled = false;
+        contactSend.textContent = 'Send';
+      });
   });
 
   // ---------- Hamburger menu ----------
