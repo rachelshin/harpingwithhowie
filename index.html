@@ -87,6 +87,8 @@ section#top { border-top: 0; }
 
 .headline {
   font: 400 clamp(38px, 6vw, 58px)/1.05 var(--headline);
+  letter-spacing: .04em; /* the outline widens each letter, so give them room */
+  word-spacing: .06em;
   -webkit-text-stroke: 3px var(--ink);
   paint-order: stroke fill;
   text-wrap: balance;
@@ -399,7 +401,7 @@ html.touch .cover {
   gap: 16px;
   padding: clamp(24px, 5vw, 40px);
 }
-.modal-name { font: 400 clamp(30px, 5vw, 38px)/1.15 var(--headline); }
+.modal-name { font: 400 clamp(30px, 5vw, 38px)/1.15 var(--headline); letter-spacing: .03em; }
 .modal-role {
   font: 400 20px/1.45 var(--serif);
   letter-spacing: .045em;
