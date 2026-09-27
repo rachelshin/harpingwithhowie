@@ -6,6 +6,14 @@
 <title>Harping with Howie</title>
 <meta name="description" content="An afterschool special for adults. Participants in the award-winning Howie the Harp Peer Support Specialist Training program in New York City share their experience, strength, and hope.">
 <meta name="theme-color" content="#B9E4F4">
+<script>
+// Runs before the page paints so touch devices never flash the desktop nav.
+(function () {
+  var touch = navigator.maxTouchPoints > 0 || 'ontouchstart' in window ||
+    (window.matchMedia && window.matchMedia('(any-pointer: coarse)').matches);
+  if (touch) document.documentElement.classList.add('touch');
+})();
+</script>
 <meta property="og:title" content="Harping with Howie">
 <meta property="og:description" content="An afterschool special for adults. Experience, strength, and hope from the Howie the Harp Peer Support Specialist Training program, NYC.">
 <meta property="og:image" content="assets/cover.jpg">
@@ -124,12 +132,58 @@ section#top { border-top: 0; }
 }
 .nav-listen:hover { background: var(--ink-hover); }
 
-@media (max-width: 719.98px) {
-  .nav-link { display: none; }
-}
 @media (max-width: 639.98px) {
   .nav-row { letter-spacing: 0; }
-  .nav-listen { padding: 10px 16px; }
+}
+
+/* Hamburger menu: replaces the nav links on touch devices (html.touch, set in <head>)
+   and on any screen too narrow for the links. */
+.menu-btn {
+  appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: none;
+  place-items: center;
+  color: var(--ink);
+}
+.menu-btn svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; }
+.menu-btn .icon-close { display: none; }
+.menu-btn[aria-expanded="true"] .icon-open { display: none; }
+.menu-btn[aria-expanded="true"] .icon-close { display: block; }
+
+.mobile-menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: var(--sky);
+  border-bottom: 2px solid var(--ink);
+}
+.mobile-menu[hidden] { display: none; }
+.mobile-menu a {
+  display: block;
+  padding-block: 18px;
+  border-top: 2px solid var(--ink);
+  font: 400 24px/1.2 var(--serif);
+  letter-spacing: .045em;
+  text-decoration: none;
+}
+.mobile-menu a:first-child { border-top: 0; }
+
+html.touch .nav-links { display: none; }
+html.touch .menu-btn { display: grid; }
+@media (max-width: 719.98px) {
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+}
+@media (min-width: 720px) {
+  html:not(.touch) .mobile-menu { display: none; }
 }
 
 /* ---------- Hero ---------- */
@@ -151,11 +205,11 @@ section#top { border-top: 0; }
   text-wrap: balance;
 }
 /* The cover shrinks to fit the screen's height so the Play button stays above the fold.
-   380px is everything else above Play's bottom edge on a phone (header, headline, gaps,
+   384px is everything else above Play's bottom edge on a phone (header, headline, gaps,
    "for grown-ups", Play). 476/528 turns the leftover height into a width. */
 .cover {
-  width: min(476px, 100%, max(220px, calc((100vh - 380px) * 476 / 528)));
-  width: min(476px, 100%, max(220px, calc((100svh - 380px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100vh - 384px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100svh - 384px) * 476 / 528)));
   aspect-ratio: 476 / 528;
   overflow: hidden;
   border: 2px solid var(--ink);
@@ -171,6 +225,11 @@ section#top { border-top: 0; }
   padding: 0 6px;
   font: 400 clamp(44px, 12vw, 60px)/1.1 var(--hand);
   animation: write 1.8s cubic-bezier(.45, .05, .55, .95) 2.5s both;
+}
+/* Phones have less above the fold to take in, so the writing starts sooner. */
+html.touch .write-on { animation-delay: 1.2s; }
+@media (max-width: 719.98px) {
+  .write-on { animation-delay: 1.2s; }
 }
 @keyframes write {
   from { clip-path: inset(-20% 100% -20% 0); }
@@ -341,14 +400,14 @@ section#top { border-top: 0; }
 .support .headline { color: var(--fill); }
 .support-copy { display: flex; flex-direction: column; gap: 28px; }
 .support-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), max-content));
+  display: flex;
+  flex-wrap: wrap;
   gap: 14px;
 }
-/* The two columns stack below ~1000px (2 x 420px + 80px gap + gutters); center once stacked. */
+.support-buttons .pill { min-width: min(100%, 220px); max-width: 100%; }
+/* The two columns stack below ~1000px (2 x 420px + 80px gap + gutters); center the
+   buttons once stacked so they line up with the Tune in buttons below. */
 @media (max-width: 999.98px) {
-  .support .two-col { text-align: center; }
-  .support .title-stack { align-items: center; }
   .support-buttons { justify-content: center; }
 }
 .btn-funder { color: var(--yellow); }
@@ -359,6 +418,28 @@ section#top { border-top: 0; }
   padding: 16px 30px;
 }
 .btn-touch:hover { background: var(--ink); color: var(--yellow); }
+
+/* Email button: the address and "Copied" sit in the same grid cell, so the button
+   keeps its size when the label swaps. */
+.btn-email {
+  appearance: none;
+  margin: 0;
+  cursor: pointer;
+  display: inline-grid;
+  line-height: 1.25;
+}
+.btn-email > span { grid-area: 1 / 1; }
+.btn-email .copied { visibility: hidden; align-self: center; }
+.btn-email.is-copied .email-text { visibility: hidden; }
+.btn-email.is-copied .copied { visibility: visible; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
 
 /* ---------- Tune in ---------- */
 .listen { background: var(--cream); }
@@ -408,7 +489,19 @@ section#top { border-top: 0; }
       <a class="nav-link" href="#support">support</a>
       <a class="nav-listen" href="#listen">listen</a>
     </nav>
+    <button type="button" class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="icon-open" viewBox="0 0 28 28" aria-hidden="true"><path d="M3 7 H25 M3 14 H25 M3 21 H25"/></svg>
+      <svg class="icon-close" viewBox="0 0 28 28" aria-hidden="true"><path d="M6 6 L22 22 M22 6 L6 22"/></svg>
+    </button>
   </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Menu" hidden>
+    <div class="container">
+      <a href="#about">about</a>
+      <a href="#hosts">hosts</a>
+      <a href="#support">support</a>
+      <a href="#listen">listen</a>
+    </div>
+  </nav>
 </header>
 
 <main>
@@ -447,7 +540,7 @@ section#top { border-top: 0; }
   <section id="hosts" class="hosts">
     <div class="container hosts-inner">
       <div class="title-stack">
-        <span class="eyebrow">starring</span>
+        <span class="eyebrow">at the mic</span>
         <h2 class="headline">Your hosts</h2>
       </div>
       <div class="host-grid" id="host-grid"></div>
@@ -464,7 +557,11 @@ section#top { border-top: 0; }
         <p>Harping with Howie is made by people training to become peer specialists, for anyone who's wondered whether things can get better. Your support pays for recording, editing and getting these stories to the people who need them.</p>
         <div class="support-buttons">
           <a class="pill btn-funder" href="#">Become a funder</a>
-          <a class="pill btn-touch" href="#">Get in touch</a>
+          <button type="button" class="pill btn-touch btn-email" id="email-btn" data-user="harpingwithhowie" data-domain="gmail.com" aria-label="Copy email address">
+            <span class="email-text"></span>
+            <span class="copied" aria-hidden="true">Copied</span>
+          </button>
+          <span class="sr-only" id="email-status" role="status"></span>
         </div>
       </div>
     </div>
@@ -475,9 +572,9 @@ section#top { border-top: 0; }
       <span class="eyebrow">wherever you get your podcasts</span>
       <h2 class="headline">Tune in</h2>
       <div class="listen-buttons">
-        <a class="pill" href="https://podcasts.apple.com/us/search?term=Harping%20with%20Howie" target="_blank" rel="noopener">Apple Podcasts</a>
-        <a class="pill" href="https://open.spotify.com/search/Harping%20with%20Howie" target="_blank" rel="noopener">Spotify</a>
-        <a class="pill" href="https://www.youtube.com/results?search_query=Harping+with+Howie" target="_blank" rel="noopener">YouTube</a>
+        <a class="pill" href="https://podcasts.apple.com/us/podcast/harping-with-howie-a-peer-support-podcast/id6802474389" target="_blank" rel="noopener">Apple Podcasts</a>
+        <a class="pill" href="https://open.spotify.com/show/0347TV99j7YV8S9QjSmabT" target="_blank" rel="noopener">Spotify</a>
+        <a class="pill" href="https://www.youtube.com/playlist?list=PLIBdxkhQkldU" target="_blank" rel="noopener">YouTube</a>
       </div>
     </div>
   </section>
@@ -612,6 +709,74 @@ section#top { border-top: 0; }
         e.preventDefault();
         first.focus();
       }
+    }
+  });
+
+  // ---------- Email button ----------
+  // The address is put together here, not written in the HTML, so spam bots scraping
+  // the page source don't find it. Tapping copies it; nothing opens a mail app.
+  var emailBtn = document.getElementById('email-btn');
+  var emailStatus = document.getElementById('email-status');
+  var email = emailBtn.dataset.user + '@' + emailBtn.dataset.domain;
+  var emailText = emailBtn.querySelector('.email-text');
+  emailText.appendChild(document.createTextNode(emailBtn.dataset.user));
+  emailText.appendChild(document.createElement('wbr')); // lets it break before the @ on narrow screens
+  emailText.appendChild(document.createTextNode('@' + emailBtn.dataset.domain));
+  emailBtn.setAttribute('aria-label', 'Copy email address, ' + email);
+  var copiedTimer = null;
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    });
+  }
+
+  emailBtn.addEventListener('click', function () {
+    copyText(email).then(function () {
+      emailBtn.classList.add('is-copied');
+      emailStatus.textContent = 'Email address copied';
+      clearTimeout(copiedTimer);
+      copiedTimer = setTimeout(function () {
+        emailBtn.classList.remove('is-copied');
+        emailStatus.textContent = '';
+      }, 2000);
+    }).catch(function () {});
+  });
+
+  // ---------- Hamburger menu ----------
+  var menuBtn = document.getElementById('menu-btn');
+  var menu = document.getElementById('mobile-menu');
+
+  function setMenu(open) {
+    menu.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  menuBtn.addEventListener('click', function () { setMenu(menu.hidden); });
+  // Tapping a link closes the menu; the anchor still scrolls to its section.
+  menu.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setMenu(false);
+  });
+  // Tapping anywhere outside the header closes it.
+  document.addEventListener('click', function (e) {
+    if (!menu.hidden && !e.target.closest('.site-header')) setMenu(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !menu.hidden) {
+      setMenu(false);
+      menuBtn.focus();
     }
   });
 
