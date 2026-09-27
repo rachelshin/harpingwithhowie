@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harping with Howie</title>
+<meta name="description" content="An afterschool special for adults. Participants in the award-winning Howie the Harp Peer Support Specialist Training program in New York City share their experience, strength, and hope.">
+<meta name="theme-color" content="#b8e8f6">
+<meta property="og:title" content="Harping with Howie">
+<meta property="og:description" content="An afterschool special for adults. Experience, strength, and hope from the Howie the Harp Peer Support Specialist Training program, NYC.">
+<meta property="og:image" content="assets/cover.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/cover.jpg">
+<link rel="apple-touch-icon" href="assets/cover.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #b8e8f6;
+  --ink: #0a0a12;
+  --yellow: #fff800;
+  --blue: #3b3bf0;
+  --red: #ff2a3c;
+  --paper: #fdfbf1;
+  --wobble: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  --display: "Archivo Black", "Arial Black", Impact, sans-serif;
+  --hand: "Permanent Marker", "Comic Sans MS", cursive;
+  --vhs: "VT323", "Courier New", monospace;
+  --body: "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--sky);
+  color: var(--ink);
+  font: 500 18px/1.55 var(--body);
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+*:focus, *:focus-visible { outline: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wrap { width: 100%; max-width: 1100px; margin: 0 auto; padding-inline: max(20px, env(safe-area-inset-left, 0px)); }
+
+/* ---------- VHS overlay ---------- */
+.scanlines {
+  position: fixed; inset: 0; z-index: 90; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.05) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+.osd {
+  position: fixed; z-index: 91; pointer-events: none;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: max(14px, env(safe-area-inset-left, 0px));
+  right: max(14px, env(safe-area-inset-right, 0px));
+  display: flex; justify-content: space-between;
+  font: 26px/1 var(--vhs); color: #fff;
+  text-shadow: 2px 0 var(--red), -2px 0 var(--blue), 0 0 6px rgba(0,0,0,.35);
+  letter-spacing: 1px;
+}
+.osd .play::after { content: " \25B6"; animation: blink 1.2s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- Intro title card ---------- */
+.intro {
+  position: fixed; inset: 0; z-index: 100;
+  background: var(--blue); color: var(--yellow);
+  display: grid; place-items: center; text-align: center;
+  padding: 24px; cursor: pointer;
+  transition: clip-path .7s cubic-bezier(.7,0,.3,1);
+  clip-path: inset(0 0 0 0);
+}
+.intro.gone { clip-path: inset(50% 0 50% 0); pointer-events: none; }
+.intro .small { font: 28px/1 var(--vhs); color: #fff; letter-spacing: 3px; margin-bottom: 18px; }
+.intro .big {
+  font: clamp(40px, 11vw, 110px)/.92 var(--display); text-transform: uppercase;
+  text-shadow: 5px 5px 0 var(--ink);
+}
+.intro .big span { display: block; opacity: 0; transform: scale(1.6); animation: slam .35s cubic-bezier(.2,1.6,.4,1) forwards; }
+.intro .big span:nth-child(1) { animation-delay: .25s; }
+.intro .big span:nth-child(2) { animation-delay: .6s; }
+.intro .big span:nth-child(3) { animation-delay: .95s; color: var(--red); }
+@keyframes slam { to { opacity: 1; transform: none; } }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; min-height: 100svh; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: calc(64px + env(safe-area-inset-top, 0px)) 20px 72px;
+  isolation: isolate;
+}
+.cloud {
+  position: absolute; z-index: -1; background: #fff; border-radius: 999px;
+  width: var(--w, 220px); height: calc(var(--w, 220px) * .3);
+  animation: drift var(--t, 80s) linear infinite; animation-delay: var(--d, 0s);
+  left: -30%;
+}
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.cloud::before { width: 45%; height: 150%; left: 14%; bottom: 20%; }
+.cloud::after { width: 34%; height: 115%; left: 48%; bottom: 30%; }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(170vw); } }
+
+.kicker {
+  font: 26px/1 var(--vhs); letter-spacing: 3px; text-transform: uppercase;
+  background: var(--ink); color: var(--yellow); padding: 6px 12px 4px;
+  transform: rotate(-2deg); margin-bottom: 10px; min-height: 1em;
+}
+.kicker .caret { animation: blink .8s steps(1) infinite; }
+
+.head-wrap { position: relative; width: min(88vw, 540px); margin-top: 6px; }
+.head {
+  width: 100%; cursor: pointer; user-select: none; -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: bob 5s ease-in-out infinite;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 5%, #000 95%, transparent);
+  mask-composite: intersect;
+  transition: transform .15s;
+}
+.head:active { transform: scale(.97) rotate(-1deg); }
+@keyframes bob { 0%,100% { translate: 0 0; rotate: -1.5deg; } 50% { translate: 0 -14px; rotate: 1.5deg; } }
+
+.spark {
+  position: absolute; width: 28px; height: 28px; pointer-events: none; z-index: 5;
+  animation: sparkfly .9s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@keyframes sparkfly {
+  0% { transform: translate(-50%, -50%) scale(.2) rotate(0); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.2) rotate(180deg); opacity: 0; }
+}
+.twinkle { position: absolute; width: 30px; animation: twinkle 2.2s ease-in-out infinite; }
+@keyframes twinkle { 0%,100% { transform: scale(.6) rotate(0); opacity: .5; } 50% { transform: scale(1.1) rotate(20deg); opacity: 1; } }
+
+.hero h1 { margin: 0; }
+.tagline {
+  max-width: 34ch; text-align: center; margin: 22px auto 0;
+  font: 400 clamp(21px, 4.6vw, 28px)/1.3 var(--hand);
+}
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 26px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font: 18px/1 var(--display); text-transform: uppercase; letter-spacing: .5px; text-decoration: none;
+  padding: 16px 24px; border: 3px solid var(--ink); border-radius: var(--wobble);
+  background: var(--yellow); color: var(--ink); box-shadow: 5px 5px 0 var(--ink);
+  cursor: pointer; transition: transform .12s, box-shadow .12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translate(-2px, -2px) rotate(-1deg); box-shadow: 7px 7px 0 var(--ink); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--ink); }
+.btn.red { background: var(--red); color: #fff; }
+.btn.blue { background: var(--blue); color: #fff; }
+.btn svg { width: 22px; height: 22px; flex: none; }
+
+/* ---------- Caution-tape marquee ---------- */
+.tapes { position: relative; height: 170px; margin: -40px 0 0; overflow: hidden; z-index: 2; }
+.tape {
+  position: absolute; left: -5%; width: 110%; white-space: nowrap; overflow: hidden;
+  border-block: 4px solid var(--ink); padding: 10px 0 8px;
+  font: clamp(24px, 5vw, 38px)/1 var(--display); text-transform: uppercase;
+}
+.tape .track { display: inline-block; animation: scroll 28s linear infinite; }
+.tape.a { top: 34px; background: var(--ink); color: var(--yellow); transform: rotate(-3deg); }
+.tape.b { top: 70px; background: var(--red); color: #fff; transform: rotate(2.5deg); }
+.tape.b .track { animation-direction: reverse; animation-duration: 34s; }
+.tape .star { color: var(--sky); margin: 0 .5em; }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ---------- Sections ---------- */
+section { position: relative; }
+.pad { padding-block: clamp(70px, 12vw, 130px); }
+.eyebrow {
+  display: inline-block; font: 24px/1 var(--vhs); letter-spacing: 3px; text-transform: uppercase;
+  border: 2px solid currentColor; padding: 5px 10px 3px; margin-bottom: 18px;
+}
+.h2 {
+  font: clamp(40px, 9vw, 92px)/.92 var(--display); text-transform: uppercase; margin: 0 0 24px;
+  letter-spacing: -1px;
+}
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s, transform .8s cubic-bezier(.2,.8,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* Very special episode */
+.episode { background: var(--blue); color: #fff; overflow: hidden; }
+.episode .h2 { color: var(--yellow); text-shadow: 5px 5px 0 var(--ink); }
+.episode .lede { font-size: clamp(21px, 3.2vw, 30px); line-height: 1.4; max-width: 30ch; font-weight: 500; }
+.episode .lede mark {
+  background: var(--yellow); color: var(--ink); padding: 0 .2em;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; margin-top: 48px; }
+.trio div {
+  border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
+  border-radius: var(--wobble); padding: 22px 20px 18px; box-shadow: 6px 6px 0 var(--ink);
+  font: 400 clamp(30px, 5vw, 42px)/1 var(--hand); text-align: center;
+  transition: transform .3s;
+}
+.trio div:nth-child(1) { transform: rotate(-2deg); }
+.trio div:nth-child(2) { transform: rotate(1.5deg); background: var(--yellow); }
+.trio div:nth-child(3) { transform: rotate(-1deg); background: var(--red); color: #fff; }
+.trio div:hover { transform: rotate(0) scale(1.04); }
+.trio small { display: block; font: 20px/1 var(--vhs); letter-spacing: 2px; margin-bottom: 8px; opacity: .8; }
+
+/* Classified */
+.secret { background: var(--yellow); }
+.file {
+  position: relative; background: var(--paper); border: 3px solid var(--ink);
+  box-shadow: 10px 10px 0 var(--ink); padding: clamp(24px, 5vw, 56px);
+  max-width: 820px; margin: 0 auto; transform: rotate(-1deg);
+  font-family: "Courier New", Courier, monospace; font-size: clamp(17px, 2.3vw, 21px); line-height: 1.7;
+}
+.file::before {
+  content: ""; position: absolute; top: -22px; left: 32px; width: 150px; height: 26px;
+  background: var(--paper); border: 3px solid var(--ink); border-bottom: 0; border-radius: 10px 10px 0 0;
+}
+.file .meta { display: grid; gap: 2px; font-size: .85em; border-bottom: 2px dashed var(--ink); padding-bottom: 14px; margin-bottom: 20px; }
+.file h2 { font: clamp(30px, 6vw, 58px)/1 var(--display); text-transform: uppercase; margin: 0 0 18px; font-family: var(--display); }
+.file p { margin: 0 0 14px; }
+.redact {
+  background: linear-gradient(var(--ink), var(--ink)) no-repeat right center / 100% 100%;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 0 2px;
+  transition: background-size .5s cubic-bezier(.7,0,.3,1);
+  transition-delay: calc(var(--i, 0) * .35s + .5s);
+}
+.file.in .redact { background-size: 0% 100%; }
+.stamp {
+  position: absolute; right: clamp(8px, 4vw, 40px); top: clamp(60px, 10vw, 90px);
+  font: clamp(22px, 4.5vw, 40px)/1 var(--display); color: var(--red); text-transform: uppercase;
+  border: 5px solid var(--red); padding: 8px 14px; border-radius: 8px;
+  transform: rotate(12deg) scale(3); opacity: 0; mix-blend-mode: multiply;
+  transition: transform .25s cubic-bezier(.3,1.6,.5,1), opacity .15s;
+  transition-delay: 2.4s;
+}
+.file.in .stamp { transform: rotate(12deg) scale(1); opacity: .9; }
+
+/* TV */
+.tv-section { background: var(--sky); overflow: hidden; }
+.tv-section .h2 { text-align: center; }
+.tv-section .h2 span { display: inline-block; }
+.tv-section .h2 span:nth-child(2) { color: var(--red); transform: rotate(-3deg); }
+.tv-section .h2 span:nth-child(3) { color: var(--blue); }
+.tv {
+  position: relative; max-width: 760px; margin: 90px auto 0;
+  background: var(--red); border: 4px solid var(--ink); border-radius: 36px;
+  padding: clamp(16px, 3vw, 28px); box-shadow: 12px 12px 0 var(--ink);
+}
+.tv::before, .tv::after {
+  content: ""; position: absolute; top: -70px; width: 5px; height: 68px; background: var(--ink); border-radius: 4px;
+}
+.tv::before { left: 42%; transform: rotate(-28deg); transform-origin: bottom; }
+.tv::after { left: 56%; transform: rotate(24deg); transform-origin: bottom; }
+.screen {
+  position: relative; aspect-ratio: 4 / 3; border: 4px solid var(--ink);
+  border-radius: 40px / 32px; overflow: hidden; background: #111;
+  box-shadow: inset 0 0 60px rgba(0,0,0,.7);
+}
+.screen canvas, .screen .ch { position: absolute; inset: 0; width: 100%; height: 100%; }
+.screen canvas { opacity: 0; transition: opacity .1s; z-index: 3; }
+.screen.static canvas { opacity: 1; }
+.screen::after {
+  content: ""; position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.25) 0 2px, transparent 2px 4px),
+              radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.18), transparent 50%);
+}
+.ch {
+  display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+  padding: 8% 10%; opacity: 0; visibility: hidden;
+}
+.ch.on { opacity: 1; visibility: visible; }
+.ch .num { font: clamp(22px, 4vw, 34px)/1 var(--vhs); color: #7dff7d; position: absolute; top: 7%; right: 8%; text-shadow: 0 0 8px #7dff7d; }
+.ch h3 { margin: 0 0 12px; font: clamp(30px, 7vw, 64px)/.95 var(--display); text-transform: uppercase; }
+.ch p { margin: 0; font: 400 clamp(17px, 3vw, 26px)/1.3 var(--hand); max-width: 24ch; }
+.ch[data-ch="1"] { background: var(--yellow); color: var(--ink); }
+.ch[data-ch="2"] { background: var(--ink); color: #fff; }
+.ch[data-ch="2"] h3 { color: var(--red); }
+.ch[data-ch="3"] { background: var(--blue); color: #fff; }
+.ch[data-ch="3"] h3 { color: var(--yellow); }
+.ch.on h3 { animation: tvpop .5s cubic-bezier(.2,1.5,.4,1); }
+@keyframes tvpop { from { transform: scale(.4); filter: blur(6px); } }
+.dials { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 18px; }
+.dial {
+  font: 16px/1 var(--display); text-transform: uppercase; color: var(--ink); background: var(--paper);
+  border: 3px solid var(--ink); border-radius: 14px; padding: 14px 16px 12px; cursor: pointer;
+  box-shadow: 0 5px 0 var(--ink); transition: transform .08s, box-shadow .08s, background .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.dial small { display: block; font: 18px/1 var(--vhs); letter-spacing: 2px; margin-bottom: 4px; opacity: .7; }
+.dial[aria-pressed="true"] { background: var(--yellow); transform: translateY(4px); box-shadow: 0 1px 0 var(--ink); }
+
+/* Starring */
+.starring { background: var(--paper); }
+.starring .h2 { font-family: var(--hand); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.cast { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 30px; margin-top: 30px; }
+.card {
+  position: relative; border: 3px solid var(--ink); border-radius: var(--wobble);
+  background: #fff; padding: 24px 22px 26px; box-shadow: 8px 8px 0 var(--ink); text-align: center;
+  transition: transform .35s cubic-bezier(.2,1.5,.4,1);
+}
+.card:nth-child(1) { transform: rotate(-2.5deg); }
+.card:nth-child(2) { transform: rotate(1.5deg) translateY(18px); }
+.card:nth-child(3) { transform: rotate(-1deg); }
+.card:hover { transform: rotate(0) translateY(-8px) scale(1.03); }
+.portrait {
+  width: 150px; height: 150px; margin: 0 auto 18px; display: grid; place-items: center;
+  border: 3px solid var(--ink); border-radius: 58% 42% 55% 45% / 45% 55% 42% 58%;
+  font: 64px/1 var(--hand); color: var(--ink); position: relative;
+}
+.card:nth-child(1) .portrait { background: var(--yellow); }
+.card:nth-child(2) .portrait { background: var(--blue); color: #fff; border-radius: 45% 55% 42% 58% / 58% 42% 55% 45%; }
+.card:nth-child(3) .portrait { background: var(--red); color: #fff; border-radius: 52% 48% 60% 40% / 40% 60% 48% 52%; }
+.card h3 { margin: 0; font: 26px/1.05 var(--display); text-transform: uppercase; }
+.card .role { font: 22px/1 var(--vhs); letter-spacing: 2px; margin-top: 8px; text-transform: uppercase; }
+.starring .note { font: 400 clamp(22px, 4vw, 32px)/1.3 var(--hand); text-align: center; max-width: 30ch; margin: 70px auto 0; }
+
+/* Unbreakable */
+.unbroken { background: var(--ink); color: #fff; overflow: hidden; text-align: center; }
+.unbroken .big { position: relative; display: inline-block; font: clamp(46px, 13vw, 170px)/.86 var(--display); text-transform: uppercase; letter-spacing: -2px; margin: 0; }
+.unbroken .big span { display: block; }
+.unbroken .big .y { color: var(--yellow); }
+.unbroken .big .r { color: var(--red); }
+.crack { position: absolute; inset: -4% -3%; width: 106%; height: 108%; pointer-events: none; overflow: visible; }
+.crack path { fill: none; stroke: var(--sky); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1600; stroke-dashoffset: 1600; }
+.unbroken.in .crack path { transition: stroke-dashoffset 1.1s cubic-bezier(.7,0,.2,1) .3s; stroke-dashoffset: 0; }
+.unbroken.in .big { animation: shake .35s 1.3s; }
+@keyframes shake {
+  20% { transform: translate(-6px, 3px) rotate(-.5deg); } 40% { transform: translate(5px, -3px); }
+  60% { transform: translate(-3px, 2px) rotate(.4deg); } 80% { transform: translate(2px, -1px); }
+}
+.unbroken .sub { font: 400 clamp(22px, 4vw, 32px)/1.3 var(--hand); margin: 40px auto 0; max-width: 28ch; color: var(--sky); }
+
+/* Tune in */
+.tune { background: var(--red); color: #fff; overflow: hidden; }
+.tune .h2 { text-shadow: 5px 5px 0 var(--ink); }
+.tune .row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
+.tune .btn { background: var(--paper); color: var(--ink); }
+.tune .btn:nth-child(2) { background: var(--yellow); }
+.tune .btn:nth-child(3) { background: var(--sky); }
+.vinyl {
+  position: absolute; right: -120px; bottom: -120px; width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, var(--yellow) 0 17%, var(--ink) 17.5% 19%, transparent 19.5%),
+              repeating-radial-gradient(circle, #16161f 0 3px, #0a0a12 3px 6px);
+  border: 4px solid var(--ink); animation: spin 6s linear infinite; opacity: .95; z-index: 0;
+}
+.tune .wrap { position: relative; z-index: 1; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* The End */
+.end { background: var(--blue); color: #fff; text-align: center; padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+.end .theend { font: clamp(60px, 16vw, 180px)/.9 var(--hand); color: var(--yellow); margin: 0; text-shadow: 6px 6px 0 var(--ink); transform: rotate(-4deg); }
+.psa {
+  max-width: 640px; margin: 50px auto 0; background: var(--ink); border: 3px solid #fff;
+  padding: 26px 24px; font: 26px/1.25 var(--vhs); letter-spacing: 1px;
+}
+.psa strong { display: block; font: clamp(40px, 8vw, 64px)/1 var(--display); color: var(--yellow); margin: 10px 0; letter-spacing: 2px; }
+.psa strong a { text-decoration: none; }
+.credits { margin-top: 56px; font-size: 16px; line-height: 1.8; opacity: .95; }
+.credits .lbl { font: 20px/1 var(--vhs); letter-spacing: 3px; text-transform: uppercase; color: var(--yellow); display: block; margin-top: 18px; }
+.credits a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .card:nth-child(2) { transform: rotate(1.5deg); }
+  .tv::before, .tv::after { height: 50px; top: -52px; }
+  .vinyl { width: 240px; height: 240px; right: -90px; bottom: -90px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01s !important; transition-delay: 0s !important; }
+  .reveal { opacity: 1; transform: none; }
+  .intro { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro" aria-hidden="true">
+  <div>
+    <div class="small">WE NOW PRESENT</div>
+    <div class="big"><span>An After&#8209;School</span><span>Special</span><span>for Adults</span></div>
+  </div>
+</div>
+
+<div class="scanlines" aria-hidden="true"></div>
+<div class="osd" aria-hidden="true"><span class="play">PLAY</span><span id="counter">SP 0:00:00</span></div>
+
+<main>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="cloud" style="--w:260px; top:8%; --t:95s; --d:-20s"></div>
+    <div class="cloud" style="--w:180px; top:30%; --t:70s; --d:-55s"></div>
+    <div class="cloud" style="--w:320px; top:62%; --t:120s; --d:-80s"></div>
+    <div class="cloud" style="--w:150px; top:82%; --t:60s; --d:-10s"></div>
+    <div class="cloud" style="--w:220px; top:45%; --t:100s; --d:-5s"></div>
+
+    <div class="kicker" aria-hidden="true"><span id="typed"></span><span class="caret">_</span></div>
+
+    <h1 class="sr">Harping with Howie</h1>
+    <div class="head-wrap" id="headWrap">
+      <svg class="twinkle" style="left:-2%; top:18%" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C13 8 16 11 23 12C16 13 13 16 12 23C11 16 8 13 1 12C8 11 11 8 12 1Z" fill="#fff" stroke="#0a0a12" stroke-width="1.6"/></svg>
+      <svg class="twinkle" style="right:0; top:40%; animation-delay:.8s" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C13 8 16 11 23 12C16 13 13 16 12 23C11 16 8 13 1 12C8 11 11 8 12 1Z" fill="#fff" stroke="#0a0a12" stroke-width="1.6"/></svg>
+      <svg class="twinkle" style="left:6%; bottom:26%; animation-delay:1.4s; width:22px" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1C13 8 16 11 23 12C16 13 13 16 12 23C11 16 8 13 1 12C8 11 11 8 12 1Z" fill="#fff" stroke="#0a0a12" stroke-width="1.6"/></svg>
+      <img class="head" id="head" src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky among sparkles and clouds." draggable="false">
+    </div>
+
+    <p class="tagline">Experience, strength, and hope from the award&#8209;winning Howie the Harp Peer Support Specialist Training program in New York City.</p>
+    <div class="cta-row">
+      <a class="btn red" href="#tune-in">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z" fill="currentColor"/></svg>
+        Press play
+      </a>
+      <a class="btn" href="#secret">What's peer support?</a>
+    </div>
+  </header>
+
+  <!-- TAPES -->
+  <div class="tapes" aria-hidden="true">
+    <div class="tape a"><span class="track">Experience<span class="star">&#10022;</span>Strength<span class="star">&#10022;</span>Hope<span class="star">&#10022;</span>Experience<span class="star">&#10022;</span>Strength<span class="star">&#10022;</span>Hope<span class="star">&#10022;</span>Experience<span class="star">&#10022;</span>Strength<span class="star">&#10022;</span>Hope<span class="star">&#10022;</span>Experience<span class="star">&#10022;</span>Strength<span class="star">&#10022;</span>Hope<span class="star">&#10022;</span></span></div>
+    <div class="tape b"><span class="track">What worked<span class="star">&#10022;</span>What didn't<span class="star">&#10022;</span>What we learned<span class="star">&#10022;</span>What worked<span class="star">&#10022;</span>What didn't<span class="star">&#10022;</span>What we learned<span class="star">&#10022;</span>What worked<span class="star">&#10022;</span>What didn't<span class="star">&#10022;</span>What we learned<span class="star">&#10022;</span></span></div>
+  </div>
+
+  <!-- VERY SPECIAL EPISODE -->
+  <section class="episode pad">
+    <div class="wrap">
+      <div class="eyebrow">Tonight's Episode</div>
+      <h2 class="h2 reveal">A very special podcast.</h2>
+      <p class="lede reveal">Participants in the award&#8209;winning <mark>Howie the Harp Peer Support Specialist Training</mark> program in New York City share their experience, strength, and hope. What worked, what didn't, and what they learned along the way.</p>
+      <div class="trio reveal">
+        <div><small>PART ONE</small>Experience</div>
+        <div><small>PART TWO</small>Strength</div>
+        <div><small>PART THREE</small>Hope</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSIFIED -->
+  <section class="secret pad" id="secret">
+    <div class="wrap">
+      <div class="file reveal" id="file">
+        <div class="meta">
+          <span>FILE NO. 988&#8209;HWH</span>
+          <span>SUBJECT: MENTAL HEALTHCARE</span>
+          <span>STATUS: BEST&#8209;KEPT SECRET</span>
+        </div>
+        <h2>What is peer support?</h2>
+        <p>One of the <span class="redact" style="--i:0">best&#8209;kept secrets</span> in mental healthcare.</p>
+        <p>It's help from <span class="redact" style="--i:1">someone who's been there.</span> Peer specialists use their own <span class="redact" style="--i:2">lived experience</span> of mental health challenges and recovery to walk alongside the people they support: <span class="redact" style="--i:3">not above them, next to them.</span></p>
+        <p>Nobody pretends to have it all figured out. That's <span class="redact" style="--i:4">the whole point.</span></p>
+        <div class="stamp" aria-hidden="true">Declassified</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TV -->
+  <section class="tv-section pad">
+    <div class="wrap">
+      <h2 class="h2"><span>What worked.</span> <span>What didn't.</span> <span>What we learned.</span></h2>
+      <div class="tv reveal">
+        <div class="screen" id="screen">
+          <div class="ch on" data-ch="1"><span class="num">CH 01</span><h3>What worked</h3><p>The stuff that actually helped, told by the people it helped.</p></div>
+          <div class="ch" data-ch="2"><span class="num">CH 02</span><h3>What didn't</h3><p>The stuff that didn't. Told honestly, and sometimes hilariously.</p></div>
+          <div class="ch" data-ch="3"><span class="num">CH 03</span><h3>What we learned</h3><p>The moral of the story. No laugh track required.</p></div>
+          <canvas id="noise" width="160" height="120" aria-hidden="true"></canvas>
+        </div>
+        <div class="dials" role="group" aria-label="Channels">
+          <button class="dial" data-to="1" aria-pressed="true"><small>CH 01</small>Worked</button>
+          <button class="dial" data-to="2" aria-pressed="false"><small>CH 02</small>Didn't</button>
+          <button class="dial" data-to="3" aria-pressed="false"><small>CH 03</small>Learned</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STARRING -->
+  <section class="starring pad">
+    <div class="wrap">
+      <div class="eyebrow">Starring</div>
+      <h2 class="h2">Your hosts</h2>
+      <div class="cast">
+        <article class="card reveal"><div class="portrait" aria-hidden="true">AB</div><h3>Anna Butler</h3><div class="role">Host &amp; Participant</div></article>
+        <article class="card reveal"><div class="portrait" aria-hidden="true">JO</div><h3>John F. O'Donnell</h3><div class="role">Host &amp; Participant</div></article>
+        <article class="card reveal"><div class="portrait" aria-hidden="true">BR</div><h3>Ben Roberts</h3><div class="role">Host &amp; Participant</div></article>
+      </div>
+      <p class="note reveal">Bringing wisdom and levity to&hellip;</p>
+    </div>
+  </section>
+
+  <!-- UNBREAKABLE -->
+  <section class="unbroken pad" id="unbroken">
+    <div class="wrap">
+      <h2 class="big">
+        <span>The things</span>
+        <span class="y">that couldn't</span>
+        <span class="r">break us.</span>
+        <svg class="crack" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path vector-effect="non-scaling-stroke" d="M-2 58 L10 52 L16 61 L27 47 L34 56 L44 43 L50 55 L58 46 L66 60 L73 49 L81 57 L88 45 L95 53 L102 48"/></svg>
+      </h2>
+      <p class="sub">They tried. Here we are.</p>
+    </div>
+  </section>
+
+  <!-- TUNE IN -->
+  <section class="tune pad" id="tune-in">
+    <div class="vinyl" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="eyebrow">Now Playing</div>
+      <h2 class="h2">Tune in.</h2>
+      <div class="row">
+        <a class="btn" href="https://podcasts.apple.com/us/search?term=Harping%20with%20Howie" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="3" fill="currentColor"/><path d="M12 14c-1.4 0-2 .8-2 2l.6 5h2.8l.6-5c0-1.2-.6-2-2-2z" fill="currentColor"/><path d="M7 16a7 7 0 1 1 10 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Apple Podcasts
+        </a>
+        <a class="btn" href="https://open.spotify.com/search/Harping%20with%20Howie" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 9.5c3.5-1 7-.6 10 1M7.5 12.8c3-.8 5.8-.4 8.3 1M8 16c2.3-.6 4.4-.3 6.4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Spotify
+        </a>
+        <a class="btn" href="https://www.youtube.com/results?search_query=Harping+with+Howie" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>
+          YouTube
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE END -->
+  <footer class="end pad">
+    <div class="wrap">
+      <p class="theend">The End?</p>
+      <div class="psa">
+        If you or someone you know is struggling, you are not alone. Call or text
+        <strong><a href="tel:988">988</a></strong>
+        Suicide &amp; Crisis Lifeline (US), 24/7
+      </div>
+      <div class="credits">
+        <span class="lbl">A production of</span>
+        Participants in the Howie the Harp Peer Support Specialist Training program, New York City
+        <span class="lbl">Hosted by</span>
+        Anna Butler, John F. O'Donnell &amp; Ben Roberts
+        <span class="lbl">Cover art by</span>
+        Pepper Auerbach, <a href="https://www.instagram.com/iwasateenagepepper/" target="_blank" rel="noopener">@iwasateenagepepper</a>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Intro title card
+  var intro = document.getElementById('intro');
+  function dismiss() { intro.classList.add('gone'); startTyping(); }
+  if (reduce) { dismiss(); } else {
+    intro.addEventListener('click', dismiss);
+    setTimeout(dismiss, 2300);
+  }
+
+  // Kicker type-on
+  var typedStarted = false;
+  function startTyping() {
+    if (typedStarted) return; typedStarted = true;
+    var el = document.getElementById('typed');
+    var text = 'An after-school special for adults';
+    if (reduce) { el.textContent = text; return; }
+    var i = 0;
+    (function tick() {
+      el.textContent = text.slice(0, ++i);
+      if (i < text.length) setTimeout(tick, 45 + Math.random() * 50);
+    })();
+  }
+
+  // VHS counter
+  var counter = document.getElementById('counter');
+  var t0 = Date.now();
+  setInterval(function () {
+    var s = Math.floor((Date.now() - t0) / 1000);
+    var m = Math.floor(s / 60) % 60, h = Math.floor(s / 3600);
+    counter.textContent = 'SP ' + h + ':' + String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }, 1000);
+
+  // Scroll reveals
+  var targets = document.querySelectorAll('.reveal, #unbroken');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.25 });
+    targets.forEach(function (t) { io.observe(t); });
+  } else {
+    targets.forEach(function (t) { t.classList.add('in'); });
+  }
+
+  // Sparkle burst on the head
+  var wrap = document.getElementById('headWrap');
+  var starSVG = '<svg viewBox="0 0 24 24"><path d="M12 1C13 8 16 11 23 12C16 13 13 16 12 23C11 16 8 13 1 12C8 11 11 8 12 1Z" fill="FILL" stroke="#0a0a12" stroke-width="1.6"/></svg>';
+  var fills = ['#fff', '#fff800', '#ff2a3c', '#3b3bf0'];
+  document.getElementById('head').addEventListener('pointerdown', function (ev) {
+    var r = wrap.getBoundingClientRect();
+    var x = ev.clientX - r.left, y = ev.clientY - r.top;
+    for (var i = 0; i < 12; i++) {
+      var s = document.createElement('div');
+      s.className = 'spark';
+      s.innerHTML = starSVG.replace('FILL', fills[i % fills.length]);
+      var a = (Math.PI * 2 * i) / 12 + Math.random() * .4;
+      var d = 70 + Math.random() * 90;
+      s.style.left = x + 'px'; s.style.top = y + 'px';
+      s.style.setProperty('--x', Math.cos(a) * d + 'px');
+      s.style.setProperty('--y', Math.sin(a) * d + 'px');
+      wrap.appendChild(s);
+      setTimeout(s.remove.bind(s), 950);
+    }
+  });
+
+  // TV channels with static
+  var screen = document.getElementById('screen');
+  var canvas = document.getElementById('noise');
+  var ctx = canvas.getContext('2d');
+  var img = ctx.createImageData(canvas.width, canvas.height);
+  function drawNoise() {
+    var d = img.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var v = Math.random() * 255 | 0;
+      d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  var dials = document.querySelectorAll('.dial');
+  var busy = false;
+  dials.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (busy || btn.getAttribute('aria-pressed') === 'true') return;
+      dials.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+      var to = btn.getAttribute('data-to');
+      function swap() {
+        screen.querySelectorAll('.ch').forEach(function (c) { c.classList.toggle('on', c.getAttribute('data-ch') === to); });
+      }
+      if (reduce) { swap(); return; }
+      busy = true;
+      screen.classList.add('static');
+      var start = performance.now();
+      (function loop(now) {
+        drawNoise();
+        if (now - start < 320) requestAnimationFrame(loop);
+        else { swap(); screen.classList.remove('static'); busy = false; }
+      })(start);
+    });
+  });
+})();
+</script>
+</body>
+</html>
