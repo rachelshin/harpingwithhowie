@@ -76,7 +76,6 @@ section#top { border-top: 0; }
   font: 400 clamp(38px, 6vw, 58px)/1.05 var(--headline);
   -webkit-text-stroke: 3px var(--ink);
   paint-order: stroke fill;
-  text-shadow: 4px 4px 0 var(--ink);
   text-wrap: balance;
 }
 
@@ -149,11 +148,14 @@ section#top { border-top: 0; }
   color: var(--fill);
   -webkit-text-stroke: 3px var(--ink);
   paint-order: stroke fill;
-  text-shadow: 4px 4px 0 var(--ink);
   text-wrap: balance;
 }
+/* The cover shrinks to fit the screen's height so the Play button stays above the fold.
+   380px is everything else above Play's bottom edge on a phone (header, headline, gaps,
+   "for grown-ups", Play). 476/528 turns the leftover height into a width. */
 .cover {
-  width: min(476px, 100%);
+  width: min(476px, 100%, max(220px, calc((100vh - 380px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100svh - 380px) * 476 / 528)));
   aspect-ratio: 476 / 528;
   overflow: hidden;
   border: 2px solid var(--ink);
@@ -164,17 +166,11 @@ section#top { border-top: 0; }
   object-fit: cover;
   object-position: 20% 50%;
 }
-.tagline-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
 .write-on {
   display: inline-block;
   padding: 0 6px;
   font: 400 clamp(44px, 12vw, 60px)/1.1 var(--hand);
-  animation: write 1.8s cubic-bezier(.45, .05, .55, .95) .4s both;
+  animation: write 1.8s cubic-bezier(.45, .05, .55, .95) 2.5s both;
 }
 @keyframes write {
   from { clip-path: inset(-20% 100% -20% 0); }
@@ -186,9 +182,17 @@ section#top { border-top: 0; }
 }
 .hero-desc { max-width: 600px; }
 .play {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
   color: var(--sky);
   padding: 18px 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
 }
+.play-icon { width: .8em; height: .8em; flex-shrink: 0; fill: currentColor; }
 
 .latest { border-top: 2px solid var(--ink); }
 .latest-row {
@@ -341,6 +345,12 @@ section#top { border-top: 0; }
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), max-content));
   gap: 14px;
 }
+/* The two columns stack below ~1000px (2 x 420px + 80px gap + gutters); center once stacked. */
+@media (max-width: 999.98px) {
+  .support .two-col { text-align: center; }
+  .support .title-stack { align-items: center; }
+  .support-buttons { justify-content: center; }
+}
 .btn-funder { color: var(--yellow); }
 .btn-touch {
   background: transparent;
@@ -408,15 +418,13 @@ section#top { border-top: 0; }
       <div class="cover">
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard and a red cap, with a hand reaching down from the sky">
       </div>
-      <div class="tagline-group">
-        <span class="write-on">for grown&#8209;ups</span>
-        <p class="body-text hero-desc">A podcast about the peer support specialists of New York City.</p>
-      </div>
-      <a class="pill play" href="#listen">&#9654; Play</a>
+      <span class="write-on">for grown&#8209;ups</span>
+      <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span id="play-label">Play</span></button>
+      <p class="body-text hero-desc">A podcast about the peer support specialists of New York City.</p>
     </div>
     <div class="latest">
       <div class="container latest-row">
-        <span>Latest: Ep. 06 &middot; ACAB!!! BMDIC, with Raff</span>
+        <span id="latest-text">Latest: Ep. 06 &middot; ACAB!!! BMDIC, with Raff</span>
         <a href="#listen">All episodes</a>
       </div>
     </div>
@@ -606,6 +614,72 @@ section#top { border-top: 0; }
       }
     }
   });
+
+  // ---------- Latest episode (from the podcast's RSS feed) ----------
+  // The feed allows cross-origin reads, so the page fetches it directly. If it fails,
+  // the Latest strip keeps its hand-typed text and Play scrolls to the Tune in section.
+  var FEED_URL = 'https://anchor.fm/s/1161ac93c/podcast/rss';
+  var PLAY_PATH = 'M0 0 L10 6 L0 12 Z';
+  var PAUSE_PATH = 'M0 0 H3.5 V12 H0 Z M6.5 0 H10 V12 H6.5 Z';
+
+  var playBtn = document.getElementById('play-btn');
+  var playLabel = document.getElementById('play-label');
+  var playIconPath = document.getElementById('play-icon-path');
+  var audio = null;
+
+  function showPlaying(playing) {
+    playLabel.textContent = playing ? 'Pause' : 'Play';
+    playIconPath.setAttribute('d', playing ? PAUSE_PATH : PLAY_PATH);
+  }
+
+  playBtn.addEventListener('click', function () {
+    if (!audio) {
+      document.getElementById('listen').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    if (audio.paused) {
+      audio.play().catch(function () { showPlaying(false); });
+    } else {
+      audio.pause();
+    }
+  });
+
+  fetch(FEED_URL)
+    .then(function (res) { return res.text(); })
+    .then(function (xml) {
+      var doc = new DOMParser().parseFromString(xml, 'application/xml');
+      var item = doc.getElementsByTagName('item')[0];
+      if (!item) return;
+      var title = (item.getElementsByTagName('title')[0] || {}).textContent;
+      var epNode = item.getElementsByTagName('itunes:episode')[0];
+      var enclosure = item.getElementsByTagName('enclosure')[0];
+      var mp3 = enclosure && enclosure.getAttribute('url');
+      if (!title) return;
+      title = title.trim();
+
+      var ep = epNode ? ('0' + epNode.textContent.trim()).slice(-2) : '';
+      document.getElementById('latest-text').textContent =
+        'Latest: ' + (ep ? 'Ep. ' + ep + ' · ' : '') + title;
+
+      if (!mp3) return;
+      audio = new Audio();
+      audio.preload = 'none';
+      audio.src = mp3;
+      audio.addEventListener('play', function () { showPlaying(true); });
+      audio.addEventListener('pause', function () { showPlaying(false); });
+      audio.addEventListener('ended', function () { showPlaying(false); });
+      audio.addEventListener('error', function () { showPlaying(false); });
+
+      // Lock screen / control center info while it plays.
+      if ('mediaSession' in navigator && window.MediaMetadata) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: title,
+          artist: 'Harping with Howie',
+          artwork: [{ src: 'assets/cover.jpg', sizes: '1205x1272', type: 'image/jpeg' }]
+        });
+      }
+    })
+    .catch(function () {});
 
   // ---------- Sticky header offset for anchor links ----------
   var header = document.querySelector('.site-header');
