@@ -205,8 +205,9 @@ html.touch .menu-btn { display: grid; }
   text-wrap: balance;
 }
 /* The cover shrinks to fit the screen's height so the Play button stays above the fold.
-   384px is everything else above Play's bottom edge on a phone (header, headline, gaps,
-   "for grown-ups", Play). 476/528 turns the leftover height into a width. */
+   384px is everything else above Play's bottom edge (header, headline, gaps,
+   "for grown-ups", Play). 476/528 turns the leftover height into a width.
+   Phones use a smaller number below, since they hide the headline. */
 .cover {
   width: min(476px, 100%, max(220px, calc((100vh - 384px) * 476 / 528)));
   width: min(476px, 100%, max(220px, calc((100svh - 384px) * 476 / 528)));
@@ -226,10 +227,28 @@ html.touch .menu-btn { display: grid; }
   font: 400 clamp(44px, 12vw, 60px)/1.1 var(--hand);
   animation: write 1.8s cubic-bezier(.45, .05, .55, .95) 2.5s both;
 }
-/* Phones have less above the fold to take in, so the writing starts sooner. */
-html.touch .write-on { animation-delay: 1.2s; }
+/* Phones: drop the headline and "for grown-ups" so the hero is just cover, Play and
+   description. The headline stays readable to screen readers (it's the page's h1). The cover
+   gets the freed-up room: 204px is header + top padding + gap + Play on a phone. */
+html.touch .write-on { display: none; }
+html.touch .hero h1 {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+html.touch .cover {
+  width: min(476px, 100%, max(220px, calc((100vh - 204px) * 476 / 528)));
+  width: min(476px, 100%, max(220px, calc((100svh - 204px) * 476 / 528)));
+}
 @media (max-width: 719.98px) {
-  .write-on { animation-delay: 1.2s; }
+  .write-on { display: none; }
+  .hero h1 {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .cover {
+    width: min(476px, 100%, max(220px, calc((100vh - 204px) * 476 / 528)));
+    width: min(476px, 100%, max(220px, calc((100svh - 204px) * 476 / 528)));
+  }
 }
 @keyframes write {
   from { clip-path: inset(-20% 100% -20% 0); }
@@ -428,18 +447,17 @@ button.pill { appearance: none; margin: 0; cursor: pointer; }
   display: flex;
   align-items: center;
   padding: 0 76px 0 var(--compose-pad);
-  background: var(--ink);
-  color: var(--cream);
+  background: var(--sky);
+  border-bottom: 2px solid var(--ink);
   font: 400 21px/1.2 var(--serif);
   letter-spacing: .045em;
 }
-.compose .modal-close { background: var(--cream); color: var(--ink); }
 .compose-form[hidden] { display: none; }
 .compose-row {
   display: grid;
-  grid-template-columns: 5.8em minmax(0, 1fr);
+  grid-template-columns: max-content minmax(0, 1fr);
   align-items: baseline;
-  gap: 12px;
+  gap: 8px;
   padding: 14px var(--compose-pad);
   border-bottom: 2px solid var(--ink);
   font: 400 20px/1.4 var(--serif);
@@ -448,7 +466,13 @@ button.pill { appearance: none; margin: 0; cursor: pointer; }
 .compose-row:focus-within { background: var(--fill); }
 .compose-row.is-body { grid-template-columns: minmax(0, 1fr); gap: 6px; }
 .compose-label { white-space: nowrap; }
-.compose-to { user-select: all; -webkit-user-select: all; }
+/* Slightly tighter spacing so the address fits on one line on a phone. */
+.compose-to { user-select: all; -webkit-user-select: all; letter-spacing: -.02em; }
+/* Phones: the pop-up spans the full screen width so the address has room. */
+@media (max-width: 719.98px) {
+  #contact-modal { padding-inline: 0; }
+  .compose { border-inline: 0; box-shadow: none; --compose-pad: 12px; }
+}
 .compose-row input, .compose-row textarea {
   appearance: none;
   width: 100%;
@@ -665,11 +689,11 @@ input, textarea, select { outline: none; box-shadow: none; }
       </div>
       <label class="compose-row">
         <span class="compose-label">From:</span>
-        <input type="text" name="name" autocomplete="name" required>
+        <input type="email" name="email" autocomplete="email" required>
       </label>
       <label class="compose-row">
-        <span class="compose-label">Reply to:</span>
-        <input type="email" name="email" autocomplete="email" required>
+        <span class="compose-label">Subject:</span>
+        <input type="text" name="subject" autocomplete="off">
       </label>
       <label class="compose-row is-body">
         <span class="compose-label">Message:</span>
