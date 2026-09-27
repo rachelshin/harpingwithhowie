@@ -258,7 +258,8 @@ html.touch .cover {
   .write-on { animation: none; }
   html { scroll-behavior: auto; }
 }
-.hero-desc { max-width: 600px; }
+.hero-desc { max-width: 600px; text-wrap: balance; }
+.nowrap { white-space: nowrap; }
 .play {
   appearance: none;
   border: 0;
@@ -486,6 +487,9 @@ button.pill { appearance: none; margin: 0; cursor: pointer; }
   font: inherit;
   letter-spacing: inherit;
 }
+/* Single-line inputs keep the browser's own line-height: iOS Safari draws the cursor too
+   low in an email field that inherits a tall line-height. */
+.compose-row input { line-height: normal; }
 .compose-row textarea { min-height: 180px; resize: vertical; }
 input, textarea, select { outline: none; box-shadow: none; }
 .compose-foot {
@@ -583,7 +587,7 @@ input, textarea, select { outline: none; box-shadow: none; }
       </div>
       <span class="write-on">for grown&#8209;ups</span>
       <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span id="play-label">Play</span></button>
-      <p class="body-text hero-desc">A podcast about the peer support specialists of New York City.</p>
+      <p class="body-text hero-desc">A podcast about the peer support specialists of <span class="nowrap">New York City.</span></p>
     </div>
     <div class="latest">
       <div class="container latest-row">
