@@ -381,7 +381,14 @@ html.touch .cover {
   letter-spacing: .045em;
   word-spacing: .08em;
 }
-.latest-row a, .modal-body a { text-underline-offset: 5px; }
+/* Underlines are a 2px background stripe rather than text-decoration, which Safari
+   breaks at each space. An inline element's background spans just the letters (top of
+   the tallest to bottom of the lowest), so the stripe lands just under the descenders,
+   and it follows the text when a link wraps onto a second line. */
+.latest-row a, .modal-body a, .site-footer a, .term-btn > span {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 2px no-repeat;
+}
 
 /* ---------- Two-column sections (About, Support) ---------- */
 .two-col {
@@ -407,11 +414,9 @@ html.touch .cover {
   font: inherit;
   letter-spacing: inherit;
   word-spacing: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 5px;
+  white-space: nowrap;
 }
-.term-btn:hover { text-decoration-thickness: 3px; }
+.term-btn:hover > span { background-size: 100% 3px; }
 .peer-title { padding-right: 56px; } /* clears the close button */
 
 /* ---------- Hosts ---------- */
@@ -735,7 +740,7 @@ input, textarea, select { outline: none; box-shadow: none; }
       </div>
       <div class="body-text about-copy">
         <p>An after&#8209;school special for adults. In each episode, our hosts sit down with a guest from New York City's peer support specialist community to talk about their mental health journey: what worked, what didn't, and what they learned along the way.</p>
-        <p>Our hosts, participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn peer-open">Peer Support</button> Specialist Training program, bring wisdom and levity to the things that couldn't break us.</p>
+        <p>Our hosts, participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn peer-open"><span>Peer Support</span></button> Specialist Training program, bring wisdom and levity to the things that couldn't break us.</p>
       </div>
     </div>
   </section>
@@ -757,7 +762,7 @@ input, textarea, select { outline: none; box-shadow: none; }
         <h2 class="headline">Support the show</h2>
       </div>
       <div class="body-text support-copy">
-        <p>Harping with Howie is made on a shoestring, with borrowed equipment, by people training to become <button type="button" class="term-btn peer-open">peer specialists</button>. Your support covers studio space, equipment of our own, and the work of making and sharing every episode. It keeps the show going, so more people can hear that mental health recovery is possible.</p>
+        <p>Harping with Howie is made on a shoestring, with borrowed equipment, by people training to become <button type="button" class="term-btn peer-open"><span>peer specialists</span></button>. Your support covers studio space, equipment of our own, and the work of making and sharing every episode. It keeps the show going, so more people can hear that mental health recovery is possible.</p>
         <div class="support-buttons">
           <a class="pill btn-funder" href="https://ko-fi.com/harpingwithhowie" target="_blank" rel="noopener">Become a funder</a>
           <button type="button" class="pill btn-touch" id="contact-open">Get in touch</button>
