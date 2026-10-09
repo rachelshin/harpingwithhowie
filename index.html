@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Harping with Howie</title>
-<meta name="description" content="An afterschool special for adults. Participants in the award-winning Howie the Harp Peer Support Specialist Training program in New York City share their lived experience, strength, and hope.">
+<meta name="description" content="An after-school special for adults. A mental wellness podcast where the hosts sit down with a guest from New York City's peer support specialist community to talk about their mental health journey.">
 <meta name="theme-color" content="#B9E4F4">
 <script>
 // Runs before the page paints so touch devices never flash the desktop nav.
@@ -15,7 +15,7 @@
 })();
 </script>
 <meta property="og:title" content="Harping with Howie">
-<meta property="og:description" content="An afterschool special for adults. Experience, strength, and hope from the Howie the Harp Peer Support Specialist Training program, NYC.">
+<meta property="og:description" content="An after-school special for adults. Mental health journeys from New York City's peer support specialist community.">
 <meta property="og:url" content="https://harpingwithhowie.netlify.app/">
 <meta property="og:image" content="https://harpingwithhowie.netlify.app/assets/cover.jpg">
 <meta property="og:image:width" content="1205">
@@ -236,9 +236,8 @@ html.touch .cover {
 }
 .hero-desc { max-width: 600px; text-wrap: balance; }
 /* Stacked (phones, tablets): .hero-text steps aside so its children line up with the
-   cover in one column, in the order cover, Play, tagline. The eyebrow is desktop-only. */
+   cover in one column, in the order cover, Play, tagline. */
 .hero-text { display: contents; }
-.hero-eyebrow { display: none; }
 .hero .hero-desc { order: 1; }
 
 /* Desktop (wide screen with no touch): cover on the left, text and Play on the right.
@@ -262,7 +261,6 @@ html.touch .cover {
     gap: 28px;
     max-width: 520px;
   }
-  html:not(.touch) .hero-eyebrow { display: block; }
   html:not(.touch) .hero .hero-desc {
     order: 0;
     max-width: none;
@@ -698,8 +696,7 @@ input, textarea, select { outline: none; box-shadow: none; }
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
       <div class="hero-text">
-        <span class="eyebrow hero-eyebrow">an after&#8209;school special</span>
-        <p class="body-text hero-desc">A podcast about the peer support specialists of <span class="nowrap">New York City.</span></p>
+        <p class="body-text hero-desc">A podcast about mental wellness, from the peer support specialists of <span class="nowrap">New York City.</span></p>
         <div class="player" id="player">
           <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span class="play-label" id="play-label">Play</span></button>
           <div class="scrub" id="scrub" hidden>
@@ -725,8 +722,8 @@ input, textarea, select { outline: none; box-shadow: none; }
         <h2 class="headline">Real stories, told by peers</h2>
       </div>
       <div class="body-text about-copy">
-        <p>An after&#8209;school special for adults. Participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn" id="peer-open">Peer Support</button> Specialist Training program in New York City share their lived experience, strength, and hope. What worked, what didn't, and what they learned along the way.</p>
-        <p>Our hosts bring wisdom and levity to the things that couldn't break us.</p>
+        <p>An after&#8209;school special for adults. In each episode, our hosts sit down with a guest from New York City's peer support specialist community to talk about their mental health journey: what worked, what didn't, and what they learned along the way.</p>
+        <p>Our hosts, participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn" id="peer-open">Peer Support</button> Specialist Training program, bring wisdom and levity to the things that couldn't break us.</p>
       </div>
     </div>
   </section>
