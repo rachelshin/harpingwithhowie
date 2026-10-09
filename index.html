@@ -718,11 +718,19 @@ input, textarea, select { outline: none; box-shadow: none; }
 <script>
 (function () {
   // Host data. Add a `photo` path (e.g. 'assets/anna.jpg') to swap the initials for a portrait.
-  var BIO = '[Short bio: how they came to peer support, what they bring to the show, one fun detail.]';
   var hosts = [
-    { name: 'Anna Butler', initials: 'AB', photo: 'assets/anna.jpg', bio: BIO },
-    { name: "John F. O'Donnell", initials: 'JO', photo: 'assets/john.jpg', bio: BIO },
-    { name: 'Ben Roberts', initials: 'BR', bio: BIO }
+    {
+      name: 'Anna Butler', initials: 'AB', photo: 'assets/anna.jpg',
+      bio: "Every life has a shape, and Anna Butler has a gift for seeing it. As a minister, mental health coach, and end-of-life doula, she has walked with people through crises of faith, struggles of the mind, and the final days of life. That vantage lets her connect the seemingly scattered pieces of a person's story and show how our past has prepared us for the present. Warm and steadfast, Anna draws on her own lived experience with trauma and depression. She is living proof that hope may have wings, but so do we."
+    },
+    {
+      name: "John F. O'Donnell", initials: 'JO', photo: 'assets/john.jpg',
+      bio: "Sometimes the only option when walking through the darkest paths of human experience is to laugh. A successful stand-up comedian with 25 years on the New York City circuit, John F. O'Donnell weaves his bipolar diagnosis and political messaging into his sets, raising awareness along the way. He brings lightness and drive to Harping with Howie, along with a hard-won truth: there is no laughing without some crying."
+    },
+    {
+      name: 'Ben Roberts', initials: 'BR', photo: 'assets/ben.jpg',
+      bio: "Kindness is Ben Roberts's first language. A born-and-raised New Yorker, he is real, with an edge of optimism. An itinerant soul, Ben found his way to peer support and turned out to be a natural: responsive, curious, and fully present. His own experience with bipolar depression taught him how dark things can get, and it drives him to be there for others who can no longer remember the light. A Gen Z/millennial and Cancer/Leo cusp, he takes a nuanced, dialectical approach that shades in all the colors between black-and-white perspectives. He is a model of what true peer support is all about."
+    }
   ];
 
   function fillPortrait(el, host) {
