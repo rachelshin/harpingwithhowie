@@ -249,6 +249,78 @@ html.touch .cover {
 }
 .play-icon { width: .8em; height: .8em; flex-shrink: 0; fill: currentColor; }
 
+/* Once an episode starts, the Play pill widens into a bar with a seek slider.
+   It stays the same height as the pill so nothing on the page shifts. */
+.player { display: flex; align-items: center; }
+.player.is-open {
+  width: min(100%, 476px);
+  gap: 12px;
+  padding: 6px 22px 6px 6px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--sky);
+}
+.player.is-open .play {
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
+.player.is-open .play-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.scrub {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 400 16px/1 var(--serif);
+  font-variant-numeric: tabular-nums;
+}
+.scrub[hidden] { display: none; }
+.seek {
+  --pct: 0%;
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+}
+.seek:disabled { cursor: default; }
+.seek::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--sky) var(--pct), transparent var(--pct));
+  box-shadow: inset 0 0 0 2px var(--sky);
+}
+.seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--sky);
+}
+.seek::-moz-range-track {
+  height: 10px;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--sky);
+}
+.seek::-moz-range-progress { height: 10px; border-radius: 999px; background: var(--sky); }
+.seek::-moz-range-thumb { width: 20px; height: 20px; border: 0; border-radius: 50%; background: var(--sky); }
+
 .latest { border-top: 2px solid var(--ink); }
 .latest-row {
   display: flex;
@@ -586,7 +658,14 @@ input, textarea, select { outline: none; box-shadow: none; }
       <div class="cover">
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
-      <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span id="play-label">Play</span></button>
+      <div class="player" id="player">
+        <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span class="play-label" id="play-label">Play</span></button>
+        <div class="scrub" id="scrub" hidden>
+          <span id="time-cur">0:00</span>
+          <input type="range" class="seek" id="seek" min="0" max="0" step="1" value="0" aria-label="Seek" disabled>
+          <span id="time-dur">0:00</span>
+        </div>
+      </div>
       <p class="body-text hero-desc">A podcast about the peer support specialists of <span class="nowrap">New York City.</span></p>
     </div>
     <div class="latest">
@@ -937,12 +1016,67 @@ input, textarea, select { outline: none; box-shadow: none; }
   var playBtn = document.getElementById('play-btn');
   var playLabel = document.getElementById('play-label');
   var playIconPath = document.getElementById('play-icon-path');
+  var player = document.getElementById('player');
+  var scrub = document.getElementById('scrub');
+  var seek = document.getElementById('seek');
+  var timeCur = document.getElementById('time-cur');
+  var timeDur = document.getElementById('time-dur');
   var audio = null;
+  var dragging = false;
 
   function showPlaying(playing) {
     playLabel.textContent = playing ? 'Pause' : 'Play';
     playIconPath.setAttribute('d', playing ? PAUSE_PATH : PLAY_PATH);
   }
+
+  // 75 -> "1:15", 3725 -> "1:02:05"
+  function formatTime(s) {
+    s = Math.max(0, Math.floor(s || 0));
+    var h = Math.floor(s / 3600);
+    var m = Math.floor(s % 3600 / 60);
+    var sec = (s % 60 < 10 ? '0' : '') + (s % 60);
+    return h ? h + ':' + (m < 10 ? '0' : '') + m + ':' + sec : m + ':' + sec;
+  }
+
+  // Moves the filled part of the bar and the elapsed time to `t` seconds.
+  function paintSeek(t) {
+    var max = Number(seek.max);
+    seek.style.setProperty('--pct', (max ? t / max * 100 : 0) + '%');
+    timeCur.textContent = formatTime(t);
+  }
+
+  // Native sliders on iOS only move when you grab the thumb exactly, so taps and
+  // drags anywhere on the bar are handled here. The 10px matches half the thumb.
+  function valueAt(clientX) {
+    var rect = seek.getBoundingClientRect();
+    var pct = (clientX - rect.left - 10) / (rect.width - 20);
+    return Math.min(1, Math.max(0, pct)) * Number(seek.max);
+  }
+  seek.addEventListener('pointerdown', function (e) {
+    if (seek.disabled) return;
+    e.preventDefault();
+    dragging = true;
+    seek.setPointerCapture(e.pointerId);
+    seek.value = valueAt(e.clientX);
+    paintSeek(Number(seek.value));
+  });
+  seek.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    seek.value = valueAt(e.clientX);
+    paintSeek(Number(seek.value));
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    audio.currentTime = Number(seek.value);
+  }
+  seek.addEventListener('pointerup', endDrag);
+  seek.addEventListener('pointercancel', endDrag);
+  // Keyboard arrows still go through the native slider.
+  seek.addEventListener('input', function () { paintSeek(Number(seek.value)); });
+  seek.addEventListener('change', function () {
+    if (!dragging) audio.currentTime = Number(seek.value);
+  });
 
   playBtn.addEventListener('click', function () {
     if (!audio) {
@@ -977,7 +1111,22 @@ input, textarea, select { outline: none; box-shadow: none; }
       audio = new Audio();
       audio.preload = 'none';
       audio.src = mp3;
-      audio.addEventListener('play', function () { showPlaying(true); });
+      audio.addEventListener('play', function () {
+        showPlaying(true);
+        player.classList.add('is-open');
+        scrub.hidden = false;
+      });
+      audio.addEventListener('durationchange', function () {
+        if (!isFinite(audio.duration)) return;
+        seek.max = Math.floor(audio.duration);
+        seek.disabled = false;
+        timeDur.textContent = formatTime(audio.duration);
+      });
+      audio.addEventListener('timeupdate', function () {
+        if (dragging) return;
+        seek.value = audio.currentTime;
+        paintSeek(audio.currentTime);
+      });
       audio.addEventListener('pause', function () { showPlaying(false); });
       audio.addEventListener('ended', function () { showPlaying(false); });
       audio.addEventListener('error', function () { showPlaying(false); });
