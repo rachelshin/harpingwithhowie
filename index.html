@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Harping with Howie | NYC Peer Support Mental Health Podcast</title>
+<title>Harping with Howie: A Peer Support Podcast | NYC Mental Health</title>
 <meta name="description" content="A mental wellness podcast where NYC peer support specialists share their mental health journeys. An after-school special for adults.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "PodcastSeries",
-  "name": "Harping with Howie",
+  "name": "Harping with Howie: A Peer Support Podcast",
   "description": "A mental wellness podcast where NYC peer support specialists share their mental health journeys. An after-school special for adults.",
   "url": "https://harpingwithhowie.netlify.app/",
   "image": "https://harpingwithhowie.netlify.app/assets/cover.jpg",
@@ -26,7 +26,7 @@
   if (touch) document.documentElement.classList.add('touch');
 })();
 </script>
-<meta property="og:title" content="Harping with Howie">
+<meta property="og:title" content="Harping with Howie: A Peer Support Podcast">
 <meta property="og:description" content="An after-school special for adults. Mental health journeys from New York City's peer support specialist community.">
 <meta property="og:url" content="https://harpingwithhowie.netlify.app/">
 <meta property="og:image" content="https://harpingwithhowie.netlify.app/assets/cover.jpg">
@@ -139,7 +139,10 @@ section#top { border-top: 0; }
   word-spacing: .08em;
 }
 .nav-row a { text-decoration: none; }
-.brand { white-space: nowrap; }
+/* Each half of the name stays whole; on narrow screens the second half wraps under the
+   first. Two lines at 1.1 are 44px, the same as the menu button, so the header keeps its height. */
+.brand { line-height: 1.1; }
+.brand span { white-space: nowrap; }
 .nav-links { display: flex; gap: 32px; align-items: center; }
 .nav-link:hover { text-decoration: underline; text-underline-offset: 6px; }
 .nav-listen {
@@ -683,7 +686,7 @@ input, textarea, select { outline: none; box-shadow: none; }
 
 <header class="site-header">
   <div class="container nav-row">
-    <a class="brand" href="#top">harping with howie</a>
+    <a class="brand" href="#top"><span>harping with howie:</span> <span>a peer support podcast</span></a>
     <nav class="nav-links" aria-label="Main">
       <a class="nav-link" href="#about">about</a>
       <a class="nav-link" href="#hosts">hosts</a>
@@ -708,7 +711,7 @@ input, textarea, select { outline: none; box-shadow: none; }
 <main>
   <section id="top" class="hero">
     <div class="container hero-col">
-      <h1 class="sr-only">Harping with Howie: An After&#8209;School Special</h1>
+      <h1 class="sr-only">Harping with Howie: A Peer Support Podcast</h1>
       <div class="cover">
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
@@ -1193,7 +1196,7 @@ input, textarea, select { outline: none; box-shadow: none; }
       if ('mediaSession' in navigator && window.MediaMetadata) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: title,
-          artist: 'Harping with Howie',
+          artist: 'Harping with Howie: A Peer Support Podcast',
           artwork: [{ src: 'assets/cover.jpg', sizes: '1205x1272', type: 'image/jpeg' }]
         });
       }
