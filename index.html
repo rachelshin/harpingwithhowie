@@ -235,6 +235,45 @@ html.touch .cover {
   html { scroll-behavior: auto; }
 }
 .hero-desc { max-width: 600px; text-wrap: balance; }
+/* Stacked (phones, tablets): .hero-text steps aside so its children line up with the
+   cover in one column, in the order cover, Play, tagline. The eyebrow is desktop-only. */
+.hero-text { display: contents; }
+.hero-eyebrow { display: none; }
+.hero .hero-desc { order: 1; }
+
+/* Desktop (wide screen with no touch): cover on the left, text and Play on the right.
+   The cover fills the screen height minus the header, hero padding, and Latest strip. */
+@media (min-width: 1000px) {
+  html:not(.touch) .hero-col {
+    flex-direction: row;
+    justify-content: center;
+    gap: clamp(56px, 6vw, 96px);
+    text-align: left;
+  }
+  html:not(.touch) .cover {
+    flex-shrink: 0;
+    width: min(560px, 46%, max(320px, calc((100vh - 280px) * 476 / 528)));
+    width: min(560px, 46%, max(320px, calc((100svh - 280px) * 476 / 528)));
+  }
+  html:not(.touch) .hero-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+    max-width: 520px;
+  }
+  html:not(.touch) .hero-eyebrow { display: block; }
+  html:not(.touch) .hero .hero-desc {
+    order: 0;
+    max-width: none;
+    font: 400 clamp(36px, 3.4vw, 48px)/1.12 var(--headline);
+    letter-spacing: .04em;
+    word-spacing: .06em;
+    color: var(--cream);
+    -webkit-text-stroke: 3px var(--ink);
+    paint-order: stroke fill;
+  }
+}
 .nowrap { white-space: nowrap; }
 .play {
   appearance: none;
@@ -658,15 +697,18 @@ input, textarea, select { outline: none; box-shadow: none; }
       <div class="cover">
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
-      <div class="player" id="player">
-        <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span class="play-label" id="play-label">Play</span></button>
-        <div class="scrub" id="scrub" hidden>
-          <span id="time-cur">0:00</span>
-          <input type="range" class="seek" id="seek" min="0" max="0" step="1" value="0" aria-label="Seek" disabled>
-          <span id="time-dur">0:00</span>
+      <div class="hero-text">
+        <span class="eyebrow hero-eyebrow">an after&#8209;school special</span>
+        <p class="body-text hero-desc">A podcast about the peer support specialists of <span class="nowrap">New York City.</span></p>
+        <div class="player" id="player">
+          <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span class="play-label" id="play-label">Play</span></button>
+          <div class="scrub" id="scrub" hidden>
+            <span id="time-cur">0:00</span>
+            <input type="range" class="seek" id="seek" min="0" max="0" step="1" value="0" aria-label="Seek" disabled>
+            <span id="time-dur">0:00</span>
+          </div>
         </div>
       </div>
-      <p class="body-text hero-desc">A podcast about the peer support specialists of <span class="nowrap">New York City.</span></p>
     </div>
     <div class="latest">
       <div class="container latest-row">
