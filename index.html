@@ -405,6 +405,15 @@ html.touch .cover {
 @media (max-width: 719.98px) {
   #modal-bio { font-size: 18px; }
 }
+/* Host pop-up: the photo stays put and only the text below it scrolls. */
+#host-modal .modal { overflow: hidden; }
+#host-modal .modal-portrait { max-height: 45dvh; } /* leaves room for text on short screens */
+#host-modal .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 
 /* ---------- Support ---------- */
 .support { background: var(--yellow); }
@@ -774,6 +783,8 @@ input, textarea, select { outline: none; box-shadow: none; }
     returnFocusTo = from;
     overlay.hidden = false;
     overlay.querySelector('.modal').scrollTop = 0;
+    var body = overlay.querySelector('.modal-body');
+    if (body) body.scrollTop = 0;
     document.documentElement.classList.add('modal-open');
     document.body.classList.add('modal-open');
     overlay.querySelector('.modal-close').focus();
