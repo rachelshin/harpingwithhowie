@@ -402,10 +402,8 @@ html.touch .cover {
   padding: clamp(24px, 5vw, 40px);
 }
 .modal-name { font: 400 clamp(30px, 5vw, 38px)/1.15 var(--headline); letter-spacing: .03em; }
-.modal-role {
-  font: 400 20px/1.45 var(--serif);
-  letter-spacing: .045em;
-  word-spacing: .08em;
+@media (max-width: 719.98px) {
+  #modal-bio { font-size: 18px; }
 }
 
 /* ---------- Support ---------- */
@@ -665,7 +663,6 @@ input, textarea, select { outline: none; box-shadow: none; }
     <div class="modal-portrait" id="modal-portrait"></div>
     <div class="modal-body">
       <span class="modal-name" id="modal-name"></span>
-      <span class="modal-role">Host and participant, Howie the Harp Peer Support Specialist Training</span>
       <p class="body-text" id="modal-bio"></p>
     </div>
   </div>
