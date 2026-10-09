@@ -735,7 +735,7 @@ input, textarea, select { outline: none; box-shadow: none; }
       </div>
       <div class="body-text about-copy">
         <p>An after&#8209;school special for adults. In each episode, our hosts sit down with a guest from New York City's peer support specialist community to talk about their mental health journey: what worked, what didn't, and what they learned along the way.</p>
-        <p>Our hosts, participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn" id="peer-open">Peer Support</button> Specialist Training program, bring wisdom and levity to the things that couldn't break us.</p>
+        <p>Our hosts, participants in the award&#8209;winning Howie the Harp <button type="button" class="term-btn peer-open">Peer Support</button> Specialist Training program, bring wisdom and levity to the things that couldn't break us.</p>
       </div>
     </div>
   </section>
@@ -757,7 +757,7 @@ input, textarea, select { outline: none; box-shadow: none; }
         <h2 class="headline">Support the show</h2>
       </div>
       <div class="body-text support-copy">
-        <p>Harping with Howie is made on a shoestring, with borrowed equipment, by people training to become peer specialists. Your support covers studio space, equipment of our own, and the work of making and sharing every episode. It keeps the show going, so more people can hear that mental health recovery is possible.</p>
+        <p>Harping with Howie is made on a shoestring, with borrowed equipment, by people training to become <button type="button" class="term-btn peer-open">peer specialists</button>. Your support covers studio space, equipment of our own, and the work of making and sharing every episode. It keeps the show going, so more people can hear that mental health recovery is possible.</p>
         <div class="support-buttons">
           <a class="pill btn-funder" href="https://ko-fi.com/harpingwithhowie" target="_blank" rel="noopener">Become a funder</a>
           <button type="button" class="pill btn-touch" id="contact-open">Get in touch</button>
@@ -980,8 +980,10 @@ input, textarea, select { outline: none; box-shadow: none; }
 
   // ---------- "What is peer support?" pop-up ----------
   var peerOverlay = document.getElementById('peer-modal');
-  var peerOpen = document.getElementById('peer-open');
-  peerOpen.addEventListener('click', function () { showModal(peerOverlay, peerOpen); });
+  // Any "peer support" term on the page opens the same explainer.
+  Array.prototype.forEach.call(document.querySelectorAll('.peer-open'), function (btn) {
+    btn.addEventListener('click', function () { showModal(peerOverlay, btn); });
+  });
 
   // ---------- Contact pop-up (Netlify Forms) ----------
   var contactOverlay = document.getElementById('contact-modal');
