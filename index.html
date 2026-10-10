@@ -281,10 +281,18 @@ html.touch .cover {
   /* The tagline is set much larger here, so "peer support specialists" may split in two. */
   html:not(.touch) .hero .hero-split { white-space: normal; }
   html:not(.touch) .hero-term-plain { display: none; }
-  html:not(.touch) .hero-term { display: inline-block; }
-  /* Cream would vanish against the sky, so the underline is ink and thicker to suit the big type. */
-  html:not(.touch) .hero-term > span { background-image: linear-gradient(var(--ink), var(--ink)); background-size: 100% 3px; }
-  html:not(.touch) .hero-term:hover > span { background-size: 100% 4px; }
+  /* No underline here: the words are yellow instead, and on hover they lift off the page
+     with an ink drop shadow, the same move the host cards make. */
+  html:not(.touch) .hero-term {
+    display: inline-block;
+    color: var(--yellow);
+    transition: transform .15s ease, text-shadow .15s ease;
+  }
+  html:not(.touch) .hero-term > span { background: none; }
+  html:not(.touch) .hero-term:hover {
+    transform: translate(-2px, -2px);
+    text-shadow: 3px 3px 0 var(--ink);
+  }
   html:not(.touch) .hero .hero-desc {
     order: 0;
     max-width: none;
