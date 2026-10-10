@@ -405,7 +405,7 @@ html.touch .cover {
    breaks at each space. An inline element's background spans just the letters (top of
    the tallest to bottom of the lowest), so the stripe lands just under the descenders,
    and it follows the text when a link wraps onto a second line. */
-.latest-row a, .modal-body a, .site-footer a, .term-btn > span {
+.latest-row a, .modal-body a, .site-footer a, .resource-list a, .term-btn > span {
   text-decoration: none;
   background: linear-gradient(currentColor, currentColor) 0 100% / 100% 2px no-repeat;
 }
@@ -681,6 +681,29 @@ input, textarea, select { outline: none; box-shadow: none; }
 }
 .listen-buttons .pill { color: var(--sky); }
 
+/* ---------- Find peer support ---------- */
+.find { background: var(--sky); }
+.find .headline { color: var(--yellow); }
+.resource-list { list-style: none; margin: 0; padding: 0; }
+.resource-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding-block: 20px;
+  border-top: 2px solid var(--ink);
+}
+.resource-list li:first-child { padding-top: 0; border-top: 0; }
+.resource-list li:last-child { padding-bottom: 0; }
+.resource-name { font: 400 24px/1.25 var(--serif); letter-spacing: .045em; word-spacing: .08em; }
+.resource-list p {
+  margin: 0;
+  font: 400 19px/1.55 var(--serif);
+  letter-spacing: .045em;
+  word-spacing: .08em;
+  text-wrap: pretty;
+}
+
 /* ---------- Footer ---------- */
 .site-footer { background: var(--ink); color: var(--cream); }
 .credits {
@@ -800,6 +823,36 @@ input, textarea, select { outline: none; box-shadow: none; }
         <a class="pill" href="https://open.spotify.com/show/0347TV99j7YV8S9QjSmabT" target="_blank" rel="noopener">Spotify</a>
         <a class="pill" href="https://www.youtube.com/playlist?list=PLIBdxkhQkldU" target="_blank" rel="noopener">YouTube</a>
       </div>
+    </div>
+  </section>
+  <section id="find" class="find">
+    <div class="container two-col">
+      <div class="title-stack">
+        <span class="eyebrow">beyond the podcast</span>
+        <h2 class="headline">Find peer support in NYC</h2>
+      </div>
+      <ul class="resource-list">
+        <li>
+          <a class="resource-name" href="https://www.nyc.gov/site/doh/health/health-topics/clubhouses.page" target="_blank" rel="noopener">Clubhouses</a>
+          <p>Free, member-run community spaces for adults living with serious mental illness, built on peer support.</p>
+        </li>
+        <li>
+          <a class="resource-name" href="https://www.nyc.gov/site/doh/health/health-topics/crisis-emergency-services-respite-centers.page" target="_blank" rel="noopener">Crisis respite centers</a>
+          <p>Home-like places to stay for up to 28 days during an emotional crisis, as an alternative to the hospital. Staffed largely by peer specialists.</p>
+        </li>
+        <li>
+          <a class="resource-name" href="https://agingresources.omh.ny.gov/resource-library/nys-peer-support-warm-lines/" target="_blank" rel="noopener">Peer warmlines</a>
+          <p>Phone lines staffed by peers, for when you're struggling but not in crisis and want someone to talk to.</p>
+        </li>
+        <li>
+          <a class="resource-name" href="https://agingresources.omh.ny.gov/resource-library/directory-of-peer-run-and-family-run-organizations-in-new-york-state/" target="_blank" rel="noopener">Peer-run organizations</a>
+          <p>New York State's directory of groups run by and for people with lived experience.</p>
+        </li>
+        <li>
+          <span class="resource-name">Your care team</span>
+          <p>Many clinics and hospitals now have peer specialists on staff. Ask your provider.</p>
+        </li>
+      </ul>
     </div>
   </section>
 </main>
