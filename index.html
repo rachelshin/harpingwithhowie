@@ -276,6 +276,8 @@ html.touch .cover {
     gap: 28px;
     max-width: 520px;
   }
+  /* The tagline is set much larger here, so "peer support specialists" may split in two. */
+  html:not(.touch) .hero .hero-split { white-space: normal; }
   html:not(.touch) .hero .hero-desc {
     order: 0;
     max-width: none;
@@ -716,7 +718,7 @@ input, textarea, select { outline: none; box-shadow: none; }
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
       <div class="hero-text">
-        <p class="body-text hero-desc"><span class="nowrap">A podcast about</span> <span class="nowrap">mental wellness,</span> <span class="nowrap">from the</span> <span class="nowrap">peer support specialists</span> <span class="nowrap">of New York City.</span></p>
+        <p class="body-text hero-desc"><span class="nowrap">A podcast about</span> <span class="nowrap">mental wellness,</span> <span class="nowrap">from the</span> <span class="nowrap hero-split"><span class="nowrap">peer support</span> <span class="nowrap">specialists</span></span> <span class="nowrap">of New York City.</span></p>
         <div class="player" id="player">
           <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span class="play-label" id="play-label">Play</span></button>
           <div class="scrub" id="scrub" hidden>
@@ -765,7 +767,7 @@ input, textarea, select { outline: none; box-shadow: none; }
         <h2 class="headline">Support the show</h2>
       </div>
       <div class="body-text support-copy">
-        <p>Harping with Howie is made on a shoestring, with borrowed equipment, by people training to become peer specialists. Your support covers studio space, equipment of our own, and the work of making and sharing every episode. It keeps the show going, so more people can hear that mental health recovery is possible.</p>
+        <p>Harping with Howie is made on a shoestring by people training to become peer specialists. Your support covers studio space, equipment of our own, and the work of making and sharing every episode. It keeps the show going, so more people can hear that mental health recovery is possible.</p>
         <div class="support-buttons">
           <a class="pill btn-funder" href="https://ko-fi.com/harpingwithhowie" target="_blank" rel="noopener">Become a funder</a>
           <button type="button" class="pill btn-touch" id="contact-open">Get in touch</button>
