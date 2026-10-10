@@ -254,6 +254,8 @@ html.touch .cover {
    cover in one column, in the order cover, Play, tagline. */
 .hero-text { display: contents; }
 .hero .hero-desc { order: 1; }
+/* "peer support" in the tagline opens the explainer on desktop only; elsewhere it's plain text. */
+.hero-term { display: none; }
 
 /* Desktop (wide screen with no touch): cover on the left, text and Play on the right.
    The cover fills the screen height minus the header, hero padding, and Latest strip. */
@@ -278,6 +280,11 @@ html.touch .cover {
   }
   /* The tagline is set much larger here, so "peer support specialists" may split in two. */
   html:not(.touch) .hero .hero-split { white-space: normal; }
+  html:not(.touch) .hero-term-plain { display: none; }
+  html:not(.touch) .hero-term { display: inline-block; }
+  /* Cream would vanish against the sky, so the underline is ink and thicker to suit the big type. */
+  html:not(.touch) .hero-term > span { background-image: linear-gradient(var(--ink), var(--ink)); background-size: 100% 3px; }
+  html:not(.touch) .hero-term:hover > span { background-size: 100% 4px; }
   html:not(.touch) .hero .hero-desc {
     order: 0;
     max-width: none;
@@ -718,7 +725,7 @@ input, textarea, select { outline: none; box-shadow: none; }
         <img src="assets/cover.jpg" width="1205" height="1272" alt="Harping with Howie cover art by Pepper Auerbach: a yellow face with glasses, a wild blue beard, and a red cap, with a hand reaching down from the sky">
       </div>
       <div class="hero-text">
-        <p class="body-text hero-desc"><span class="nowrap">A podcast about</span> <span class="nowrap">mental wellness,</span> <span class="nowrap">from the</span> <span class="nowrap hero-split"><span class="nowrap">peer support</span> <span class="nowrap">specialists</span></span> <span class="nowrap">of New York City.</span></p>
+        <p class="body-text hero-desc"><span class="nowrap">A podcast about</span> <span class="nowrap">mental wellness,</span> <span class="nowrap">from the</span> <span class="nowrap hero-split"><span class="nowrap"><span class="hero-term-plain">peer support</span><button type="button" class="term-btn peer-open hero-term"><span>peer support</span></button></span> <span class="nowrap">specialists</span></span> <span class="nowrap">of New York City.</span></p>
         <div class="player" id="player">
           <button type="button" class="pill play" id="play-btn"><svg class="play-icon" viewBox="0 0 10 12" aria-hidden="true"><path id="play-icon-path" d="M0 0 L10 6 L0 12 Z"/></svg><span class="play-label" id="play-label">Play</span></button>
           <div class="scrub" id="scrub" hidden>
@@ -875,7 +882,7 @@ input, textarea, select { outline: none; box-shadow: none; }
     },
     {
       name: 'Ben Roberts', initials: 'BR', photo: 'assets/ben.jpg?v=2',
-      bio: "Kindness is Ben's first language. He is a born-and-raised New Yorker, real with an edge of optimism. A Gen Z/millennial and Cancer/Leo cusp, he takes a nuanced, dialectical approach that shades in all the colors between black-and-white perspectives. His itinerant soul led him to peer support, where he turned out to be a natural: curious, responsive, and fully present. Bipolar depression taught him firsthand how dark things can get, and it drives him to be there for others who can't remember the light."
+      bio: "Kindness is Ben's first language. He is a born-and-raised New Yorker, real with an edge of optimism. A Gen Z/millennial and Cancer/Leo cusp, he takes a nuanced, dialectical approach that shades in all the colors between black-and-white perspectives. His itinerant soul led him to peer support, where he turned out to be a natural: curious, responsive, and fully present. Bipolar depression taught him firsthand how dark things can get, and it drives him to sit with others in their dark until they find the light."
     }
   ];
 
