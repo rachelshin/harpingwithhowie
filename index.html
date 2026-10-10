@@ -257,9 +257,22 @@ html.touch .cover {
 /* "peer support" in the tagline: a yellow highlighter swipe instead of an underline, so it
    doesn't stack up with the underlined "All episodes" link just below. Desktop uses yellow text. */
 .hero .hero-term > span {
-  background: var(--yellow);
-  padding: .04em .22em;
-  border-radius: 4px;
+  position: relative;
+  isolation: isolate; /* keeps the stroke below the letters but above the page */
+}
+/* The marker stroke: see-through yellow over the lower part of the letters, with lopsided
+   rounded ends and a slight tilt so it looks drawn by hand. */
+.hero .hero-term > span::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -.18em;
+  right: -.14em;
+  top: .32em;
+  bottom: .02em;
+  background: rgba(242, 201, 76, .72); /* --yellow, partly see-through */
+  border-radius: .6em .25em .5em .3em / .45em .6em .35em .55em;
+  transform: rotate(-1.5deg) skewX(-8deg);
 }
 
 /* Desktop (wide screen with no touch): cover on the left, text and Play on the right.
@@ -292,7 +305,7 @@ html.touch .cover {
     color: var(--yellow);
     transition: transform .15s ease, text-shadow .15s ease;
   }
-  html:not(.touch) .hero .hero-term > span { background: none; padding: 0; }
+  html:not(.touch) .hero .hero-term > span::before { display: none; }
   html:not(.touch) .hero-term:hover {
     transform: translate(-2px, -2px);
     text-shadow: 3px 3px 0 var(--ink);
