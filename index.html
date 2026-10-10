@@ -257,6 +257,7 @@ html.touch .cover {
 /* "peer support" in the tagline: a yellow highlighter swipe instead of an underline, so it
    doesn't stack up with the underlined "All episodes" link just below. Desktop uses yellow text. */
 .hero .hero-term > span {
+  background: none; /* no shared link underline here, just the marker stroke */
   position: relative;
   isolation: isolate; /* keeps the stroke below the letters but above the page */
 }
