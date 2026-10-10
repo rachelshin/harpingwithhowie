@@ -46,7 +46,6 @@
   --sky: #B9E4F4;
   --cream: #F7F2EA;
   --yellow: #F2C94C;
-  --blue: #3F3CFF; /* Howie's beard in the cover art */
   --fill: #FFF6D8;
   --ink: #151515;
   --ink-hover: #333333;
@@ -255,10 +254,13 @@ html.touch .cover {
    cover in one column, in the order cover, Play, tagline. */
 .hero-text { display: contents; }
 .hero .hero-desc { order: 1; }
-/* "peer support" in the tagline: colored instead of underlined, so it doesn't stack up
-   with the underlined "All episodes" link just below. Desktop swaps the blue for yellow. */
-.hero .hero-term { color: var(--blue); }
-.hero .hero-term > span { background: none; }
+/* "peer support" in the tagline: a yellow highlighter swipe instead of an underline, so it
+   doesn't stack up with the underlined "All episodes" link just below. Desktop uses yellow text. */
+.hero .hero-term > span {
+  background: var(--yellow);
+  padding: .04em .22em;
+  border-radius: 4px;
+}
 
 /* Desktop (wide screen with no touch): cover on the left, text and Play on the right.
    The cover fills the screen height minus the header, hero padding, and Latest strip. */
@@ -290,6 +292,7 @@ html.touch .cover {
     color: var(--yellow);
     transition: transform .15s ease, text-shadow .15s ease;
   }
+  html:not(.touch) .hero .hero-term > span { background: none; padding: 0; }
   html:not(.touch) .hero-term:hover {
     transform: translate(-2px, -2px);
     text-shadow: 3px 3px 0 var(--ink);
